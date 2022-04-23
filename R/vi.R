@@ -67,7 +67,7 @@ bbb <- function(bnn, samples_per_step, maxiter, batchsize, nchains = 1){
     juliacode <- sprintf("%s = bbb(%s, %i, %i, %i);", sym.bbb,
                          bnn$juliavar, samples_per_step, maxiter, batchsize)
   } else {
-    juliacode <- sprintf("%s = bbb(%s, %i, %i, %i, %i);", symb.bbb,
+    juliacode <- sprintf("%s = bbb(%s, %i, %i, %i, %i);", sym.bbb,
                          bnn$juliavar, samples_per_step, maxiter, batchsize, nchains)
   }
   JuliaCall::julia_command(juliacode)

@@ -26,7 +26,9 @@ their syntaxt. Before we demonstrate this, we first need to install and
 load BFluxR. Installation is currently only possible from Github:
 
 ``` r
-# devtools::install_github("enweg/BFlurR")
+devtools::install_github("enweg/BFluxR")
+#> Skipping install of 'BFluxR' from a github remote, the SHA1 (e54f426f) has not changed since last install.
+#>   Use `force = TRUE` to force installation
 ```
 
 ## Variational Inference

@@ -9,6 +9,8 @@ draw(dist, n)
 \arguments{
 \item{dist}{Should either be a prior distribution (see for example
 \code{\link{Gamma}}) or a laplace approximation.}
+
+\item{n}{Number of draws}
 }
 \description{
 Draw values from a distribution

@@ -50,7 +50,7 @@ Only the last draw will be kept.}
 }
 \value{
 A list with the following content
-\itemize {
+\itemize{
     \item samples - A matrix of dimension parameters x draws if `nchains==1`, otherwise
           a tensor of dimensions parameters x draws x chains
     \item hastings - MH ratios.

@@ -68,7 +68,7 @@ sgld <- function(bnn, batchsize, maxiter,
 #' @param adapth Adapt h (This directly corresponds to adapting `l`)
 #'
 #' @return A list with the following content
-#' \itemize {
+#' \itemize{
 #'     \item samples - A matrix of dimension parameters x draws if `nchains==1`, otherwise
 #'           a tensor of dimensions parameters x draws x chains
 #'     \item hastings - MH ratios.
@@ -86,7 +86,7 @@ ggmc <- function(bnn, batchsize, maxiter, init = NULL, nchains = 1,
   if (nchains == 1){
     if (is.null(init)) init <- rnorm(BNN.totparams(bnn))
     JuliaCall::julia_assign(sym.init, init)
-    juliacode <- sprintf("%s = ggmc(%s, %i, %s, %i; l = %f, β = %f, keep_every = %i, adapruns = %i, κ = %f, goal_accept_rate = %f, adaptM = %s, adapth = %s);",
+    juliacode <- sprintf("%s = ggmc(%s, %i, %s, %i; l = %f, beta = %f, keep_every = %i, adapruns = %i, kappa = %f, goal_accept_rate = %f, adaptM = %s, adapth = %s);",
                          sym.ggmc, bnn$juliavar, batchsize, sym.init, maxiter,
                          l, beta, keep_every,
                          adapruns, kappa,
@@ -98,7 +98,7 @@ ggmc <- function(bnn, batchsize, maxiter, init = NULL, nchains = 1,
     JuliaCall::julia_assign(sym.init, init)
     JuliaCall::julia_command(sprintf("%s = [Float64.(init) for init in %s];",
                                      sym.init, sym.init))
-    juliacode <- sprintf("%s = ggmc(%s, %i, %s, %i, %i; l = %f, β = %f, keep_every = %i, adapruns = %i, κ = %f, goal_accept_rate = %f, adaptM = %s, adapth = %s);",
+    juliacode <- sprintf("%s = ggmc(%s, %i, %s, %i, %i; l = %f, beta = %f, keep_every = %i, adapruns = %i, kappa = %f, goal_accept_rate = %f, adaptM = %s, adapth = %s);",
                          sym.ggmc, bnn$juliavar, batchsize, sym.init, maxiter, nchains,
                          l, beta, keep_every,
                          adapruns, kappa,
