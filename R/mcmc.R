@@ -102,7 +102,7 @@ ggmc <- function(bnn, batchsize, maxiter, init = NULL, nchains = 1,
                          ifelse(adaptM, "true", "false"),
                          ifelse(adapth, "true", "false"))
   } else{
-    if (is.null(init)) init <- lapply(1:nchains, function(x) rnorm(BNN.totparams(bnn)))
+    if (is.null(init)) init <- lapply(1:nchains, function(x) 0.25*rnorm(BNN.totparams(bnn)))
     JuliaCall::julia_assign(sym.init, init)
     JuliaCall::julia_command(sprintf("%s = [Float64.(init) for init in %s];",
                                      sym.init, sym.init))
