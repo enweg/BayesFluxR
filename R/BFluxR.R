@@ -21,6 +21,8 @@
 #' Set a seed both in Julia and R
 #'
 #' @param seed seed to be used
+#'
+#' @export
 .set_seed <- function(seed){
   JuliaCall::julia_command(sprintf("Random.seed!(%i);", seed))
   set.seed(seed)
