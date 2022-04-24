@@ -7,7 +7,7 @@
 #' @param n Number of draws
 #'
 #' @export
-draw <- function(dist, n){
+draw.laplace <- function(dist, n){
   JuliaCall::julia_eval(sprintf("rand(%s, %i)", dist$juliavar, n))
 }
 
