@@ -5,6 +5,8 @@
 #' @param dist Should either be a prior distribution (see for example
 #'             \code{\link{Gamma}}) or a laplace approximation.
 #' @param n Number of draws
+#'
+#' @export
 draw <- function(dist, n){
   JuliaCall::julia_eval(sprintf("rand(%s, %i)", dist$juliavar, n))
 }

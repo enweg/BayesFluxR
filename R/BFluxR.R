@@ -24,7 +24,7 @@
 .set_seed <- function(seed){
   JuliaCall::julia_command(sprintf("Random.seed!(%i)", seed))
   set.seed(seed)
-  message("Set the seed of Julia and R to %i", seed)
+  message("Set the seed of Julia and R to ", seed)
 }
 
 #' Set up of the Julia environment needed for BFlux
@@ -40,11 +40,12 @@ BFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, ...){
 
   Sys.setenv(JULIA_NUM_THREADS = sprintf("%i", nthreads))
   julia <- JuliaCall::julia_setup(installJulia = TRUE, ...)
-  pkgs_needed <- list("git@github.com:enweg/BFlux.git", "Flux", "Distributions", "Random")
+  # pkgs_needed <- list("git@github.com:enweg/BFlux.git", "Flux", "Distributions", "Random")
+  pkgs_needed <- list("git@github.com:enweg/BFlux.git", "Flux@0.13.0", "Distributions", "Random")
   if (pkg_check){
     do.call(.install_pkg, pkgs_needed)
   }
-  do.call(.using, c(list("BFlux"), pkgs_needed[-1]))
+  do.call(.using, c(list("BFlux", "Flux"), pkgs_needed[-c(1:2)]))
   if (!is.null(seed)) .set_seed(seed)
 }
 
@@ -90,6 +91,11 @@ BNN <- function(net, loglike, y, x){
   sym.x <- get_random_symbol()
   sym.y <- get_random_symbol()
   JuliaCall::julia_assign(sym.x, x)
+  if (ndims(x) == 3){
+    # Recurrent Case. Transform Tensor to Vector of Matrix
+    JuliaCall::julia_command(sprintf("%s = BFlux.to_RNN_format(%s)",
+                                     sym.x, sym.x))
+  }
   JuliaCall::julia_assign(sym.y, y)
   juliacode <- sprintf("BNN(%s, %s, %s, %s)",
                        net$juliavar,
@@ -132,6 +138,10 @@ posterior_predict <- function(bnn, samples, newx = NULL){
   JuliaCall::julia_assign(sym.samples, samples)
   if (!is.null(newx)){
     JuliaCall::julia_assign(sym.x, newx)
+    if (ndims(newx) == 3){
+      JuliaCall::julia_command(sprintf("%s = BFlux.to_RNN_format(%s);",
+                                       sym.x, sym.x))
+    }
   } else {
     JuliaCall::julia_command(sprintf("%s = %s.x;", sym.x, bnn$juliavar))
   }

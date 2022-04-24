@@ -1,9 +1,19 @@
 
+#' Draw from ADVI distribution
+#'
+#' @inheritParams draw.vi
+#'
+#' @export
 draw.vi.advi <- function(vi, n){
   if (!class(vi) == "advi") stop("vi must be of class advi")
   JuliaCall::julia_eval(sprintf("rand(%s, %i)", vi$juliavar, n))
 }
 
+#' Draw from BBB distribution
+#'
+#' @inheritParams draw.vi
+#'
+#' @export
 draw.vi.bbb <- function(vi, n){
   JuliaCall::julia_eval(sprintf("rand(%s, %i)",
                                 vi$juliadist, n))
