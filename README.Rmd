@@ -1,5 +1,6 @@
 ---
 output: github_document
+bibliography: bibliography.bib
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -9,7 +10,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%" 
+  out.width = "100%"
 )
 ```
 
@@ -85,11 +86,11 @@ bnn <- BNN(net, loglike, y.train, x.train)
 
 The simplest way in which we can estimate our model is by finding the posterior mode and taking this as the single best estimate. We have two options to do so. We can either use the full gradient or we can use the more common stoachastic gradient. As long as the dataset is small, this will not be much different, since SGD will often need more iterations than full gradient descent. For larger data sets, I do recommend opting for SGD though. The first time (in each session) any estimation function is evaluated, it will take some time, since Julia will first compile the code. This is similar to what Stan does, just that Stan does it immediately, while Julia and hence BFluxR/BFlux is just-in-time compiled. 
 
-```{r, cache = TRUE}
+```{r}
 mode.full <- find_mode(bnn, 1000, 1e-1) # Using full gradient with 10K max iterations
 ```
 
-```{r, cache = TRUE}
+```{r}
 # Note here how we call BNN.totparams to obtain the total number of 
 # parameters to be estimated in the model. This often comes in handy. 
 # We also again choose a max of 10K epochs and a mini-batch of 99 samples. 
@@ -119,7 +120,7 @@ In theory, we could now test whether these two modes behave differntly. This is 
 
 Before we come to more advanced methods of Bayesian estimation, we will first focus on one of the most basic methods: Laplace approximations around a mode. Or better here: around multiple modes. BFlux allows for the estimation of modes in parallel and allows to form a (diagonal) multivariate normal approximation around all these modes. Taking all these approximation together then gives a mixture of normals (equally weighted). 
 
-```{r, cache = TRUE}
+```{r}
 # We are going for 5 modes. 
 lapprox <- laplace(bnn, 10000, 5, tol = 1e-6)
 ```
@@ -207,7 +208,7 @@ BFluxR currently implementes two VI methods.
 
 We will first use ADVI. ADVI uses the full gradient and is thus likely unsuited for larger data environments. See ... for how ADVI works. We will use 10 draws in each iteration to estimate the expectation and will run ADVI for a total of 10,000 iterations.  
 
-```{r, cache = TRUE}
+```{r}
 vi.advi <- advi(bnn, 10, 10000)
 ```
 
@@ -243,7 +244,7 @@ mean((y.test > p.upper) | (y.test < p.lower))
 
 Bayes By Backprop uses a re-parameterisation trick to push the gradient inside the expectation. This often results in less noisy estimates. BBB also allows for stochastic gradients, making it better suited for large data environments. BFluxR/BFlux currently only implement BBB with a diagonal covariance matrix, but work is in progress to allow for more flexible VI families. The current implementation of BBB also allows for parallel estimation of multiple approximations. This might be useful, as these can later be combined into a single approximation. 
 
-```{r, cache = TRUE}
+```{r}
 # We choose a mini-batch size of 99 with 1000 epochs resulting in roughly 
 # 5000 total iterations. 
 vi.bbb <- bbb(bnn, 10, 3000, 99, nchains = 4)
@@ -298,10 +299,11 @@ BFluxR/BFlux do not implement the more common NUTS sampler. This choice was made
 
 We can use SGLD to estimate the network by calling `sgld` in a similar manner to how we called `find_mode_sgd`. 
 
-```{r, cache = TRUE}
+```{r}
 # Again working with mini-batches of size 99 
 # with 10K epochs result in 50K steps (draws). 
-samples.sgld <- sgld(bnn, 99, 10000, nchains = 4, stepsize_a = 0.001, stepsize_b = 0)
+.set_seed(6150533)
+samples.sgld <- sgld(bnn, 99, 10000, nchains = 4, stepsize_a = 0.001, stepsize_b = 100)
 ```
 
 ```{r}
@@ -350,9 +352,10 @@ legend(-3.5, max(y.test) + 1.0, c("Truth", "PP Mean"), col = c("black", "red"), 
 
 As mentioned above ... recently pointed out that SGLD and many other SGMCMC methods using the Euler-Maruyama method to discretesize the SDEs have a zero MH acceptance rate. Thus, although these schemes have guarantees under certain conditions and as the stepsize decreases to zero, they will still always have a zero MH acceptance rate and are thus impossible to correct (correct for the discretisation). Instead ... propose the use of GGMC which can be used with stochastic gradients and delayed acceptance and has a strictly positive MH acceptance rate. BFluxR/BFlux implements GGMC using stochastic gradients and delayed acceptance. The latter of which is set using the `keep_every` argument. As the name suggests, delayed acceptance is implemented by taking multiple steps and only keeping the last of these multisteps if the proposal was accepted. BFluxR/BFlux also implements an adaptation phase inspired by [PyMC3's tuning phase](https://colcarroll.github.io/hmc_tuning_talk/) and [Stan's tuning](https://mc-stan.org/docs/2_18/reference-manual/hmc-algorithm-parameters.html). Experience tells me that mass adaptation often does not work too well yet and thus here we will choose only to adapt $h$ which, as ... show, has a direct connection to the stepsize. We will keep all other default parameters for now. 
 
-```{r, cache = TRUE}
+```{r}
+.set_seed(6150533)
 samples.ggmc <- ggmc(bnn, 99, 20000, nchains = 4, adapth = TRUE, 
-                     goal_accept_rate = 0.6, keep_every = 5, l = 0.00001, beta = 0.1)
+                     goal_accept_rate = 0.8, keep_every = 5, l = 0.00001, beta = 0.1)
 ```
 
 One obsevation that I thus far made is that GGMC often suffers from very poor mixing within and across chains, which is also what we observe below. However, dispite this, GGMC still often manages to outperform the other methods in MSE and coverage of credible intervals. Here, for example, GGMC is the only one that even gets close to the 5% coverage of our credible intervals. 
@@ -432,12 +435,13 @@ x.test <- x[, (train+1):ncol(x), , drop = FALSE]
 We are now ready to create a Baysian LSTM out of this. 
 
 ```{r}
-bnn <- BNN(net, loglike, y.tain, x.train)
+bnn <- BNN(net, loglike, y.train, x.train)
 ```
 
 All estimation methods from the previous section are available. Here GGMC was chosen. 
 
-```{r, cache = TRUE}
+```{r}
+.set_seed(6150533)
 samples.ggmc <- ggmc(bnn, 99, 10000, nchains = 4, keep_every = 3)
 ```
 

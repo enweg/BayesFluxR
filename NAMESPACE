@@ -2,6 +2,7 @@
 
 S3method(draw.vi,advi)
 S3method(draw.vi,bbb)
+export(.set_seed)
 export(BFluxR_setup)
 export(BNN)
 export(BNN.totparams)
