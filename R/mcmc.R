@@ -6,6 +6,8 @@
 #' Bayesian learning via stochastic gradient Langevin dynamics.
 #' In Proceedings of the 28th international conference on machine learning (ICML-11) (pp. 681-688).
 #'
+#' Stepsizes follow the schedule \eqn{a(b+t)^{-\gamma}}
+#'
 #' @param bnn BNN formed using \code{\link{BNN}}
 #' @param batchsize Mini-batchsize
 #' @param maxiter Number of epochs to run SGLD for
@@ -13,6 +15,9 @@
 #'             of length `BNN.totparams(bnn)`, else a list of
 #'             numeric vectors of the size above.
 #' @param nchains Number of chains to run in parallel.
+#' @param stepsize_a See the stepsize schedule
+#' @param stepsize_b See the stepsize schedule
+#' @param stepsize_gamma See the stepsize schedule
 #'
 #' @return If `nchains == 1` then return a matrix of dimension
 #'         parameter x draws. Otherwise it returns a tensor of dimension
@@ -20,28 +25,31 @@
 #'
 #' @export
 sgld <- function(bnn, batchsize, maxiter,
-                 init = NULL, nchains = 1){
+                 init = NULL, nchains = 1,
+                 stepsize_a = 0.1, stepsize_b = 100, stepsize_gamma = 0.8){
   sym.init <- get_random_symbol()
   if (nchains == 1){
     if (is.null(init)) init <- rnorm(BNN.totparams(bnn))
     JuliaCall::julia_assign(sym.init, init)
-    juliacode <- sprintf("sgld(%s, %i, %s, %i)",
+    juliacode <- sprintf("sgld(%s, %i, %s, %i; stepsize_a = %f, stepsize_b = %f, stepsize_gamma = %f)",
                          bnn$juliavar,
                          batchsize,
                          sym.init,
-                         maxiter)
+                         maxiter,
+                         stepsize_a, stepsize_b, stepsize_gamma)
     return(JuliaCall::julia_eval(juliacode))
   }
   if (is.null(init)) init <- lapply(1:nchains, function(x) rnorm(BNN.totparams(bnn)))
   JuliaCall::julia_assign(sym.init, init)
   JuliaCall::julia_command(sprintf("%s = [Float64.(init) for init in %s];",
                                    sym.init, sym.init))
-  juliacode <- sprintf("sgld(%s, %i, %s, %i, %i)",
+  juliacode <- sprintf("sgld(%s, %i, %s, %i, %i; stepsize_a = %f, stepsize_b = %f, stepsize_gamma = %f)",
                        bnn$juliavar,
                        batchsize,
                        sym.init,
                        maxiter,
-                       nchains)
+                       nchains,
+                       stepsize_a, stepsize_b, stepsize_gamma)
   return(JuliaCall::julia_eval(sprintf("cat(%s...; dims = 3);", juliacode)))
 }
 

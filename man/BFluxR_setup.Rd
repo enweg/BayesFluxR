@@ -4,7 +4,13 @@
 \alias{BFluxR_setup}
 \title{Set up of the Julia environment needed for BFlux}
 \usage{
-BFluxR_setup(pkg_check = TRUE, nthreads = 4, seed = NULL, ...)
+BFluxR_setup(
+  pkg_check = TRUE,
+  nthreads = 4,
+  seed = NULL,
+  env_path = getwd(),
+  ...
+)
 }
 \arguments{
 \item{pkg_check}{(Default=TRUE) Check whether needed Julia packages
@@ -14,8 +20,13 @@ are installed}
 
 \item{seed}{Seed to be used.}
 
+\item{env_path}{The path to were the Julia environment should be created.
+By default, this is the current working directory.}
+
 \item{...}{Other parameters passed on to \code{\link[JuliaCall]{julia_setup}}}
 }
 \description{
-Set up of the Julia environment needed for BFlux
+This will set up a new Julia environment in the current working
+directory or another folder if provided. This environment will
+then be set with all Julia dependencies needed.
 }

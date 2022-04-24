@@ -1,5 +1,16 @@
 #' Creates a random string that is used as variable in julia
-get_random_symbol <- function() paste0(sample(letters, 5, replace = TRUE), collapse = "")
+get_random_symbol <- function() {
+  nframe <- sys.nframe()
+  caller <- ""
+  if (nframe > 1){
+    caller <- deparse(sys.calls()[[nframe-1]])
+    caller <- strsplit(caller, "\\(")[[1]][1]
+    caller <- gsub("\\.", "_", caller)
+    caller <- paste0(caller, "_")
+  }
+  sym <- paste0(sample(letters, 5, replace = TRUE), collapse = "")
+  paste0(caller, sym)
+}
 
 #' helper function
 .tensor_embed <- function(y, len_seq){

@@ -9,8 +9,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%", 
-  cache = TRUE
+  out.width = "100%" 
 )
 ```
 
@@ -28,13 +27,13 @@ BFluxR is a R interface to BFlux.jl which itself extends the famous Flux.jl mach
 BFluxR's and BFlux's are based on Flux.jl and thus take over a lot of their syntaxt. Before we demonstrate this, we first need to install and load BFluxR. Installation is currently only possible from Github: 
 
 ```{r}
-devtools::install_github("enweg/BFluxR")
+# devtools::install_github("enweg/BFluxR")
 ```
 
 BFluxR depends on BFlux.jl which is a library written in Julia. Hence, to run BFluxR, we need a way to access Julia. This is provided by the JuliaCall library. So we also need to install that library. I recommend installing the github version. 
 
 ```{r}
-devtools::install_github("Non-Contradiction/JuliaCall")
+# devtools::install_github("Non-Contradiction/JuliaCall")
 ```
 
 We are now ready to start exploring BFluxR. We first need to load the package and run the setup. This will install Julia if you do not yet have it and will install all the Julia dependencies, including BFlux.jl. If you already do have Julia installed, then the script will pick the Julia verion on your computer. If you, like me, have multiple version installed, can define the version you want to use by setting the `JULIA_HOME` variable to the path of the Julia version you want to use. So, most users can ignore tha `JULIA_HOME` variable set below. Running these lines for the first time can take a while, since it will possibly have to install Julia and all dependencies. After this, if you do no longer wish you check if all dependencies are available, you can set `pkg_check = FALSE`.
@@ -86,11 +85,11 @@ bnn <- BNN(net, loglike, y.train, x.train)
 
 The simplest way in which we can estimate our model is by finding the posterior mode and taking this as the single best estimate. We have two options to do so. We can either use the full gradient or we can use the more common stoachastic gradient. As long as the dataset is small, this will not be much different, since SGD will often need more iterations than full gradient descent. For larger data sets, I do recommend opting for SGD though. The first time (in each session) any estimation function is evaluated, it will take some time, since Julia will first compile the code. This is similar to what Stan does, just that Stan does it immediately, while Julia and hence BFluxR/BFlux is just-in-time compiled. 
 
-```{r}
+```{r, cache = TRUE}
 mode.full <- find_mode(bnn, 1000, 1e-1) # Using full gradient with 10K max iterations
 ```
 
-```{r}
+```{r, cache = TRUE}
 # Note here how we call BNN.totparams to obtain the total number of 
 # parameters to be estimated in the model. This often comes in handy. 
 # We also again choose a max of 10K epochs and a mini-batch of 99 samples. 
@@ -120,7 +119,7 @@ In theory, we could now test whether these two modes behave differntly. This is 
 
 Before we come to more advanced methods of Bayesian estimation, we will first focus on one of the most basic methods: Laplace approximations around a mode. Or better here: around multiple modes. BFlux allows for the estimation of modes in parallel and allows to form a (diagonal) multivariate normal approximation around all these modes. Taking all these approximation together then gives a mixture of normals (equally weighted). 
 
-```{r}
+```{r, cache = TRUE}
 # We are going for 5 modes. 
 lapprox <- laplace(bnn, 10000, 5, tol = 1e-6)
 ```
@@ -128,7 +127,7 @@ lapprox <- laplace(bnn, 10000, 5, tol = 1e-6)
 We can then directly draw samples from this mixture of normals. We also here clearly see the multimodality. 
 
 ```{r}
-ldraws <- draw(lapprox, n = 10000)
+ldraws <- BFluxR::draw.laplace(lapprox, n = 10000)
 hist(ldraws[dim(ldraws)[1]-1, ], breaks = 50)
 ```
 
@@ -208,7 +207,7 @@ BFluxR currently implementes two VI methods.
 
 We will first use ADVI. ADVI uses the full gradient and is thus likely unsuited for larger data environments. See ... for how ADVI works. We will use 10 draws in each iteration to estimate the expectation and will run ADVI for a total of 10,000 iterations.  
 
-```{r}
+```{r, cache = TRUE}
 vi.advi <- advi(bnn, 10, 10000)
 ```
 
@@ -244,7 +243,7 @@ mean((y.test > p.upper) | (y.test < p.lower))
 
 Bayes By Backprop uses a re-parameterisation trick to push the gradient inside the expectation. This often results in less noisy estimates. BBB also allows for stochastic gradients, making it better suited for large data environments. BFluxR/BFlux currently only implement BBB with a diagonal covariance matrix, but work is in progress to allow for more flexible VI families. The current implementation of BBB also allows for parallel estimation of multiple approximations. This might be useful, as these can later be combined into a single approximation. 
 
-```{r}
+```{r, cache = TRUE}
 # We choose a mini-batch size of 99 with 1000 epochs resulting in roughly 
 # 5000 total iterations. 
 vi.bbb <- bbb(bnn, 10, 3000, 99, nchains = 4)
@@ -299,10 +298,10 @@ BFluxR/BFlux do not implement the more common NUTS sampler. This choice was made
 
 We can use SGLD to estimate the network by calling `sgld` in a similar manner to how we called `find_mode_sgd`. 
 
-```{r}
+```{r, cache = TRUE}
 # Again working with mini-batches of size 99 
 # with 10K epochs result in 50K steps (draws). 
-samples.sgld <- sgld(bnn, 99, 10000, nchains = 4)
+samples.sgld <- sgld(bnn, 99, 10000, nchains = 4, stepsize_a = 0.001, stepsize_b = 0)
 ```
 
 ```{r}
@@ -351,7 +350,7 @@ legend(-3.5, max(y.test) + 1.0, c("Truth", "PP Mean"), col = c("black", "red"), 
 
 As mentioned above ... recently pointed out that SGLD and many other SGMCMC methods using the Euler-Maruyama method to discretesize the SDEs have a zero MH acceptance rate. Thus, although these schemes have guarantees under certain conditions and as the stepsize decreases to zero, they will still always have a zero MH acceptance rate and are thus impossible to correct (correct for the discretisation). Instead ... propose the use of GGMC which can be used with stochastic gradients and delayed acceptance and has a strictly positive MH acceptance rate. BFluxR/BFlux implements GGMC using stochastic gradients and delayed acceptance. The latter of which is set using the `keep_every` argument. As the name suggests, delayed acceptance is implemented by taking multiple steps and only keeping the last of these multisteps if the proposal was accepted. BFluxR/BFlux also implements an adaptation phase inspired by [PyMC3's tuning phase](https://colcarroll.github.io/hmc_tuning_talk/) and [Stan's tuning](https://mc-stan.org/docs/2_18/reference-manual/hmc-algorithm-parameters.html). Experience tells me that mass adaptation often does not work too well yet and thus here we will choose only to adapt $h$ which, as ... show, has a direct connection to the stepsize. We will keep all other default parameters for now. 
 
-```{r}
+```{r, cache = TRUE}
 samples.ggmc <- ggmc(bnn, 99, 20000, nchains = 4, adapth = TRUE, 
                      goal_accept_rate = 0.6, keep_every = 5, l = 0.00001, beta = 0.1)
 ```
@@ -438,7 +437,7 @@ bnn <- BNN(net, loglike, y.tain, x.train)
 
 All estimation methods from the previous section are available. Here GGMC was chosen. 
 
-```{r}
+```{r, cache = TRUE}
 samples.ggmc <- ggmc(bnn, 99, 10000, nchains = 4, keep_every = 3)
 ```
 
@@ -459,6 +458,14 @@ apply(below | above, 2, mean)
 ```
 
 The rest of the analysis would be the exact same as above. 
+
+## Overview: Estimation 
+
+BFluxR/BFlux currently implements Bayesian estimation on three different accuracy levels. The first is modal approximations which are implemented using Diagonal-multivariate-Gaussian Laplace approximations of a mode. These can also be used as a mixture if the approximations are done for multiple modes. This follows @bda3. Modal approximations can be corrected using Sampling-Importance-Resampling, as suggested in @bda3. 
+
+The second level of accuracy is given by Variational Approximations or Variational Inference. Currently two VI methods are implemented: Automatic Differentiation Variational Inference (ADVI) [@advi2015; @turing] and Bayes By Backprop (BBB) [@bayesbybackprop; @jospin2022hands]. ADVI does currently not allow for stochastic gradients and thus scales badly with the data set size. It does allow for a much more flexible variational distribution though. BBB, as currently implemented, does allow for stochastic gradients and mini-batches and thus scales better, but currently only supports diagonal-multivariate-Gaussians. Due to its scalability, BBB can be estimated using various starting points though, allowing also here to take a mixture of approximations. BFlux/BFluxR allows to do this in parallel. 
+
+The third level of approximations is given by Markov Chain Monte Carlo Methods (MCMC). Two methods are currently implemented. The most natural to most machine learning researchers due to its similarity to standard Neural Network estimation is Stochastic Gradient Langevin Dynamics as introduced by @welling2011bayesian. SGLD could be summarised as doing SGD with additional gradient noise in each iteration. @welling2011bayesian show that as the step size goes to zero, the discrete SGLD algorithm converges to Langevin Dynamics which have the posterior as their stationary distribution. @garriga2021exact recently showed though, that although the statement is true, for any stepsize greater than zero (and thus essentially always), SGLD and other SGMCMC [@nemeth2021stochastic] methods have a zero Metropolis-Hastings (MH) acceptance probability. They point out that this is due to the Euler-Maruyama method used to discretesize Langevin Dynamics. Due to the zero MH acceptance probability, SGLD cannot be corrected for the discretization error using the common MH scheme and is thus difficult to monitor. So SGLD should always be just seen as another approximation with (in practical scenarios) essentially no convergence guarantees. As a remedy to this shortcoming @garriga2021exact propose the use of Gradient Guided Monte Carlo (GGMC) which can be, and is in BFluxR/BFlux, implemented using stochastic gradient methods. GGMC uses a reversible integrator and thus the MH acceptance probability is positive. Moreoever, the mass matrix and step length can be tuned along the the lines of standard Hamiltonian Monte Carlo adaptations/tuning. BFluxR/BFlux currently implements these tunings, although in a simplified way currently.
 
 ## Current Problems and Shortcomings
 

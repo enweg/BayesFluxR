@@ -4,7 +4,16 @@
 \alias{sgld}
 \title{Use Stochastic Gradient Longevin Dynamics}
 \usage{
-sgld(bnn, batchsize, maxiter, init = NULL, nchains = 1)
+sgld(
+  bnn,
+  batchsize,
+  maxiter,
+  init = NULL,
+  nchains = 1,
+  stepsize_a = 0.1,
+  stepsize_b = 100,
+  stepsize_gamma = 0.8
+)
 }
 \arguments{
 \item{bnn}{BNN formed using \code{\link{BNN}}}
@@ -18,6 +27,12 @@ of length `BNN.totparams(bnn)`, else a list of
 numeric vectors of the size above.}
 
 \item{nchains}{Number of chains to run in parallel.}
+
+\item{stepsize_a}{See the stepsize schedule}
+
+\item{stepsize_b}{See the stepsize schedule}
+
+\item{stepsize_gamma}{See the stepsize schedule}
 }
 \value{
 If `nchains == 1` then return a matrix of dimension
@@ -29,4 +44,7 @@ Uses Stochastic Gradient Longevin Dynamics according to
 Welling, M., & Teh, Y. W. (2011).
 Bayesian learning via stochastic gradient Langevin dynamics.
 In Proceedings of the 28th international conference on machine learning (ICML-11) (pp. 681-688).
+}
+\details{
+Stepsizes follow the schedule \eqn{a(b+t)^{-\gamma}}
 }

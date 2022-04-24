@@ -22,25 +22,34 @@
 #'
 #' @param seed seed to be used
 .set_seed <- function(seed){
-  JuliaCall::julia_command(sprintf("Random.seed!(%i)", seed))
+  JuliaCall::julia_command(sprintf("Random.seed!(%i);", seed))
   set.seed(seed)
   message("Set the seed of Julia and R to ", seed)
 }
 
 #' Set up of the Julia environment needed for BFlux
 #'
+#' This will set up a new Julia environment in the current working
+#' directory or another folder if provided. This environment will
+#' then be set with all Julia dependencies needed.
+#'
 #' @param pkg_check (Default=TRUE) Check whether needed Julia packages
 #'                  are installed
 #' @param nthreads (Default=4) How many threads to make available to Julia
 #' @param seed Seed to be used.
+#' @param env_path The path to were the Julia environment should be created.
+#'                 By default, this is the current working directory.
 #' @param ... Other parameters passed on to \code{\link[JuliaCall]{julia_setup}}
 #'
 #' @export
-BFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, ...){
+BFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, env_path = getwd(), ...){
 
   Sys.setenv(JULIA_NUM_THREADS = sprintf("%i", nthreads))
   julia <- JuliaCall::julia_setup(installJulia = TRUE, ...)
-  # pkgs_needed <- list("git@github.com:enweg/BFlux.git", "Flux", "Distributions", "Random")
+  JuliaCall::julia_library("Pkg")
+  sym.env <- get_random_symbol()
+  JuliaCall::julia_assign(sym.env, env_path)
+  JuliaCall::julia_command(sprintf("Pkg.activate(%s)", sym.env))
   pkgs_needed <- list("git@github.com:enweg/BFlux.git", "Flux@0.13.0", "Distributions", "Random")
   if (pkg_check){
     do.call(.install_pkg, pkgs_needed)
