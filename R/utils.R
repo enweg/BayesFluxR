@@ -13,6 +13,9 @@ get_random_symbol <- function() {
 }
 
 #' helper function
+#'
+#' @param y Observations
+#' @param len_seq length of sequence
 .tensor_embed <- function(y, len_seq){
   tensor <- c()
   n_seq <- length(y) - len_seq + 1
@@ -46,6 +49,8 @@ tensor_embed <- function(..., len_seq){
 }
 
 #' helper function to determine dimensions of object
+#'
+#' @param x some array
 ndims <- function(x){
   if (is.array(x)) {
     return(length(dim(x)))

@@ -4,9 +4,11 @@
 \alias{likelihood.seqtoone_tdist}
 \title{Use a T-likelihood for a seq-to-one recurrent network.}
 \usage{
-likelihood.seqtoone_tdist(sig_prior, nu = 30)
+likelihood.seqtoone_tdist(chain, sig_prior, nu = 30)
 }
 \arguments{
+\item{chain}{Network structure obtained using \code{link{Chain}}}
+
 \item{sig_prior}{A prior distribution for sigma defined using
 \code{\link{Gamma}}, \code{link{InverGamma}},
 \code{\link{Truncated}}, \code{\link{Normal}}}

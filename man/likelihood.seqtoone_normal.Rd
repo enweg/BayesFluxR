@@ -4,9 +4,11 @@
 \alias{likelihood.seqtoone_normal}
 \title{Use a Normal likelihood for a seq-to-one recurrent network}
 \usage{
-likelihood.seqtoone_normal(sig_prior)
+likelihood.seqtoone_normal(chain, sig_prior)
 }
 \arguments{
+\item{chain}{Network structure obtained using \code{link{Chain}}}
+
 \item{sig_prior}{A prior distribution for sigma defined using
 \code{\link{Gamma}}, \code{link{InverGamma}},
 \code{\link{Truncated}}, \code{\link{Normal}}}

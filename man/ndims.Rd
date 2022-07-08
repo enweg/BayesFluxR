@@ -6,6 +6,9 @@
 \usage{
 ndims(x)
 }
+\arguments{
+\item{x}{some array}
+}
 \description{
 helper function to determine dimensions of object
 }

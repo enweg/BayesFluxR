@@ -6,6 +6,11 @@
 \usage{
 .tensor_embed(y, len_seq)
 }
+\arguments{
+\item{y}{Observations}
+
+\item{len_seq}{length of sequence}
+}
 \description{
 helper function
 }

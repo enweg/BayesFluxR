@@ -2,26 +2,31 @@
 % Please edit documentation in R/BFluxR.R
 \name{BNN}
 \alias{BNN}
-\title{Create A Bayesian Neural Network using BFlux.jl}
+\title{Create a Bayesian Neural Network}
 \usage{
-BNN(net, loglike, y, x)
+BNN(x, y, like, prior, init)
 }
 \arguments{
-\item{net}{A network created using \code{\link{Chain}}}
+\item{x}{For a Feedforward structure, this must be a matrix of dimensions
+variables x observations; For a recurrent structure, this must be a
+tensor of dimensions sequence_length x number_variables x number_sequences;
+In general, the last dimension is always the dimension over which will be batched.}
 
-\item{loglike}{A likelihood created using, for example, \code{\link{likelihood.feedforward_normal}}}
+\item{y}{A vector or matrix with observations.}
 
-\item{y}{outcomes}
+\item{like}{Likelihood; See for example \code{\link{likelihood.feedforward_normal}}}
 
-\item{x}{features}
+\item{prior}{Prior; See for example \code{\link{prior.gaussian}}}
+
+\item{init}{Initialiser; See for example \code{\link{initialise.allsame}}}
 }
 \value{
-A list containing the following
+List with the following content
 \itemize{
-    \item juliavar - julia variable containing the BNN
-    \item juliacode - julia code used to create the BNN
+    \item `juliavar` - the julia variable containing the BNN
+    \item `juliacode` - the string representation of the BNN
 }
 }
 \description{
-Create A Bayesian Neural Network using BFlux.jl
+Create a Bayesian Neural Network
 }

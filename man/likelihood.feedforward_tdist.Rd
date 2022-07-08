@@ -4,9 +4,11 @@
 \alias{likelihood.feedforward_tdist}
 \title{Use  a t-Distribution likelihood for a Feedforward network}
 \usage{
-likelihood.feedforward_tdist(sig_prior, nu = 30)
+likelihood.feedforward_tdist(chain, sig_prior, nu = 30)
 }
 \arguments{
+\item{chain}{Network structure obtained using \code{link{Chain}}}
+
 \item{sig_prior}{A prior distribution for sigma defined using
 \code{\link{Gamma}}, \code{link{InverGamma}},
 \code{\link{Truncated}}, \code{\link{Normal}}}

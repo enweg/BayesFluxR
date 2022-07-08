@@ -9,6 +9,12 @@
   }
 }
 
+
+#' Obtain the status of the current Julia project
+.julia_project_status <- function(){
+  JuliaCall::julia_command("Pkg.status()")
+}
+
 #' Loads Julia packages
 #'
 #' @param ... strings of package names
@@ -52,11 +58,11 @@ BFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, env_path =
   sym.env <- get_random_symbol()
   JuliaCall::julia_assign(sym.env, env_path)
   JuliaCall::julia_command(sprintf("Pkg.activate(%s)", sym.env))
-  pkgs_needed <- list("git@github.com:enweg/BFlux.git", "Flux@0.13.0", "Distributions", "Random")
+  pkgs_needed <- list("https://github.com/enweg/BFlux.git", "Flux@0.13.0", "Distributions", "Random")
   if (pkg_check){
     do.call(.install_pkg, pkgs_needed)
   }
-  do.call(.using, c(list("BFlux", "Flux"), pkgs_needed[-c(1:2)]))
+  do.call(.using, c(c("BFlux", "Flux"), pkgs_needed[-c(1:2)]))
   if (!is.null(seed)) .set_seed(seed)
 }
 
@@ -73,52 +79,65 @@ BFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, env_path =
 #' @export
 Chain <- function(...){
   julia <- "Chain("
+  julia_layer_strings <- c()
   for (elem in list(...)){
-    julia <- paste0(julia, elem$julia, ",")
+    # julia <- paste0(julia, elem$julia, ",")
+    julia_layer_strings <- c(julia_layer_strings, elem$julia)
   }
+  julia_layer_strings <- paste0(julia_layer_strings, collapse = ", ")
+  julia <- paste0(julia, julia_layer_strings)
   julia <- paste0(julia, ")")
   sym.net <- get_random_symbol()
   JuliaCall::julia_command(sprintf("%s = %s", sym.net, julia))
-  out <- list(juliavar = sym.net, specification = julia)
+
+  # creating a NetworkConstructor
+  sym.nc <- get_random_symbol()
+  JuliaCall::julia_command(sprintf("%s = destruct(%s)",
+                                   sym.nc, sym.net))
+
+  out <- list(juliavar = sym.net, specification = julia, nc = sym.nc)
   return(out)
 }
 
-#' Create A Bayesian Neural Network using BFlux.jl
+#' Create a Bayesian Neural Network
 #'
-#' @param net A network created using \code{\link{Chain}}
-#' @param loglike A likelihood created using, for example, \code{\link{likelihood.feedforward_normal}}
-#' @param y outcomes
-#' @param x features
+#' @param x For a Feedforward structure, this must be a matrix of dimensions
+#' variables x observations; For a recurrent structure, this must be a
+#' tensor of dimensions sequence_length x number_variables x number_sequences;
+#' In general, the last dimension is always the dimension over which will be batched.
+#' @param y A vector or matrix with observations.
+#' @param like Likelihood; See for example \code{\link{likelihood.feedforward_normal}}
+#' @param prior Prior; See for example \code{\link{prior.gaussian}}
+#' @param init Initialiser; See for example \code{\link{initialise.allsame}}
 #'
-#' @return A list containing the following
+#' @return List with the following content
 #' \itemize{
-#'     \item juliavar - julia variable containing the BNN
-#'     \item juliacode - julia code used to create the BNN
+#'     \item `juliavar` - the julia variable containing the BNN
+#'     \item `juliacode` - the string representation of the BNN
 #' }
 #'
 #' @export
-#'
-BNN <- function(net, loglike, y, x){
+BNN <- function(x, y, like, prior, init){
   sym.x <- get_random_symbol()
   sym.y <- get_random_symbol()
+
   JuliaCall::julia_assign(sym.x, x)
-  if (ndims(x) == 3){
-    # Recurrent Case. Transform Tensor to Vector of Matrix
-    JuliaCall::julia_command(sprintf("%s = BFlux.to_RNN_format(%s)",
-                                     sym.x, sym.x))
-  }
+  JuliaCall::julia_command(sprintf("%s = Float32.(%s)",
+                                   sym.x, sym.x))
+
   JuliaCall::julia_assign(sym.y, y)
-  juliacode <- sprintf("BNN(%s, %s, %s, %s)",
-                       net$juliavar,
-                       loglike$juliavar,
-                       sym.y,
-                       sym.x)
-  sym.bnn <- get_random_symbol()
-  JuliaCall::julia_command(sprintf("%s = %s;",
-                                   sym.bnn,
-                                   juliacode))
-  out <- list(juliavar = sym.bnn,
-              juliacode = juliacode)
+  JuliaCall::julia_command(sprintf("%s = Float32.(%s)",
+                                   sym.y, sym.y))
+
+
+  juliavar <- get_random_symbol()
+  juliacode <- sprintf("BNN(%s, %s, %s, %s, %s)",
+                       sym.x, sym.y, like$juliavar,
+                       prior$juliavar, init$juliavar)
+  JuliaCall::julia_command(sprintf("%s = %s",
+                           juliavar, juliacode))
+
+  out <- list(juliavar = juliavar, juliacode = juliacode)
   return(out)
 }
 
@@ -127,41 +146,9 @@ BNN <- function(net, loglike, y, x){
 #' @param bnn A BNN formed using \code{\link{BNN}}
 #' @export
 BNN.totparams <- function(bnn) {
-  totparams <- JuliaCall::julia_eval(sprintf("%s.totparams", bnn$juliavar))
+  totparams <- JuliaCall::julia_eval(sprintf("%s.num_total_params", bnn$juliavar))
   return(totparams)
 }
-
-
-#' Obtain posterior predictive draws
-#'
-#' @param bnn A BNN formed using \code{\link{BNN}}
-#' @param samples Either a matrix of dimensions parameters x draws
-#'                or a tensor of dimensions parameters x draws x chains
-#' @param newx New X to use for posterior predictions
-#'
-#' @return Returns a matrix of dimensions N x draws if samples is a matrix
-#'         and otherwise a tensor of dimensions N x draws x chains
-#'
-#' @export
-posterior_predict <- function(bnn, samples, newx = NULL){
-  sym.x = get_random_symbol()
-  sym.samples = get_random_symbol()
-  JuliaCall::julia_assign(sym.samples, samples)
-  if (!is.null(newx)){
-    JuliaCall::julia_assign(sym.x, newx)
-    if (ndims(newx) == 3){
-      JuliaCall::julia_command(sprintf("%s = BFlux.to_RNN_format(%s);",
-                                       sym.x, sym.x))
-    }
-  } else {
-    JuliaCall::julia_command(sprintf("%s = %s.x;", sym.x, bnn$juliavar))
-  }
-
-  JuliaCall::julia_eval(sprintf("posterior_predict(%s, %s; newx = %s)",
-                                bnn$juliavar, sym.samples, sym.x))
-}
-
-
 
 
 
