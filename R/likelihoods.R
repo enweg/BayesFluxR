@@ -25,7 +25,7 @@ likelihood.feedforward_normal <- function(chain, sig_prior){
   juliacode <- sprintf("FeedforwardNormal(%s, %s)",
                        chain$nc, sig_prior$juliavar)
   symbol <- get_random_symbol()
-  JuliaCall::julia_command(sprintf("%s = %s", symbol, juliacode))
+  JuliaCall::julia_command(sprintf("%s = %s;", symbol, juliacode))
   out <- list(juliavar = symbol, juliacode = juliacode)
   return(out)
 }
@@ -46,7 +46,7 @@ likelihood.feedforward_tdist <- function(chain, sig_prior, nu=30){
   juliacode <- sprintf("BFlux.FeedforwardTDist(%s, %s, %ff0)",
                        chain$nc, sig_prior$juliavar, nu)
   symbol <- get_random_symbol()
-  JuliaCall::julia_command(sprintf("%s = %s", symbol, juliacode))
+  JuliaCall::julia_command(sprintf("%s = %s;", symbol, juliacode))
   out <- list(juliavar = symbol, juliacode = juliacode)
   return(out)
 }

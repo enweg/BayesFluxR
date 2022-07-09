@@ -33,7 +33,7 @@ posterior_predictive <- function(bnn, posterior_samples, x = NULL){
   }
   sym.x <- get_random_symbol()
   JuliaCall::julia_assign(sym.x, x)
-  JuliaCall::julia_command(sprintf("%s = Float32.(%s)",
+  JuliaCall::julia_command(sprintf("%s = Float32.(%s);",
                                    sym.x, sym.x))
 
   if (ndims(posterior_samples) == 3){
@@ -45,7 +45,7 @@ posterior_predictive <- function(bnn, posterior_samples, x = NULL){
 
   sym.theta <- get_random_symbol()
   JuliaCall::julia_assign(sym.theta, posterior_samples)
-  JuliaCall::julia_command(sprintf("%s = Float32.(%s)",
+  JuliaCall::julia_command(sprintf("%s = Float32.(%s);",
                                    sym.theta, sym.theta))
 
   values <- JuliaCall::julia_eval(sprintf("sample_posterior_predict(%s, %s; x = %s)",

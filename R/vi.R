@@ -11,7 +11,7 @@ bayes_by_backprop <- function(bnn, batchsize, epochs,
                        n_samples_convergence)
 
   juliavar <- get_random_symbol()
-  JuliaCall::julia_command(sprintf("%s = %s",
+  JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
 
 

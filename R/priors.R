@@ -19,7 +19,7 @@ prior.gaussian <- function(chain, sigma){
   juliacode <- sprintf("GaussianPrior(%s, %ff0)",
                        chain$nc, sigma)
   juliavar <- get_random_symbol()
-  JuliaCall::julia_command(sprintf("%s = %s",
+  JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
   out <- list(juliavar = juliavar, juliacode = juliacode)
   return(out)
@@ -47,7 +47,7 @@ prior.mixturescale <- function(chain, sigma1, sigma2, pi1){
   juliacode <- sprintf("MixtureScalePrior(%s, %ff0, %ff0, %ff0)",
                        chain$nc, sigma1, sigma2, pi1)
   juliavar <- get_random_symbol()
-  JuliaCall::julia_command(sprintf("%s = %s",
+  JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
   out <- list(juliavar = juliavar, juliacode = juliacode)
   return(out)

@@ -31,3 +31,4 @@ testthat::test_that("Seq-to-One TDist Likelihood", {
   x <- JuliaCall::julia_eval(ffnormal$juliavar)
   expect_s3_class(x, "JuliaObject")
 })
+

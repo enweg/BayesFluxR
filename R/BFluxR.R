@@ -92,7 +92,7 @@ Chain <- function(...){
 
   # creating a NetworkConstructor
   sym.nc <- get_random_symbol()
-  JuliaCall::julia_command(sprintf("%s = destruct(%s)",
+  JuliaCall::julia_command(sprintf("%s = destruct(%s);",
                                    sym.nc, sym.net))
 
   out <- list(juliavar = sym.net, specification = julia, nc = sym.nc)
@@ -126,11 +126,11 @@ BNN <- function(x, y, like, prior, init){
   sym.y <- get_random_symbol()
 
   JuliaCall::julia_assign(sym.x, x)
-  JuliaCall::julia_command(sprintf("%s = Float32.(%s)",
+  JuliaCall::julia_command(sprintf("%s = Float32.(%s);",
                                    sym.x, sym.x))
 
   JuliaCall::julia_assign(sym.y, y)
-  JuliaCall::julia_command(sprintf("%s = Float32.(%s)",
+  JuliaCall::julia_command(sprintf("%s = Float32.(%s);",
                                    sym.y, sym.y))
 
 
@@ -138,7 +138,7 @@ BNN <- function(x, y, like, prior, init){
   juliacode <- sprintf("BNN(%s, %s, %s, %s, %s)",
                        sym.x, sym.y, like$juliavar,
                        prior$juliavar, init$juliavar)
-  JuliaCall::julia_command(sprintf("%s = %s",
+  JuliaCall::julia_command(sprintf("%s = %s;",
                            juliavar, juliacode))
 
   out <- list(juliavar = juliavar, juliacode = juliacode,

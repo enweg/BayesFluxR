@@ -21,7 +21,7 @@ sampler.SGLD <- function(stepsize_a = 0.1, stepsize_b = 0,
   juliavar <- get_random_symbol()
   juliacode <- sprintf("ascii_SGLD(; stepsize_a = %ff0, stepsize_b = %ff0, stepsize_gamma = %ff0, min_stepsize = Float32(%s))",
                        stepsize_a, stepsize_b, stepsize_gamma, min_stepsize)
-  JuliaCall::julia_command(sprintf("%s = %s",
+  JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
   out <- list(juliavar = juliavar, juliacode = juliacode,
               stepsize_a = stepsize_a, stepsize_b = stepsize_b,
@@ -48,13 +48,13 @@ sampler.AdaptiveMH <- function(bnn, t0, sd, eps=1e-6){
   C0 = diag(x = rep(1, BNN.totparams(bnn)))
   sym.C0 = get_random_symbol()
   JuliaCall::julia_assign(sym.C0, C0)
-  JuliaCall::julia_command(sprintf("%s = Float32.(%s)",
+  JuliaCall::julia_command(sprintf("%s = Float32.(%s);",
                                    sym.C0, sym.C0))
 
   juliavar <- get_random_symbol()
   juliacode <- sprintf("AdaptiveMH(%s, %i, %ff0, %ff0)",
                        sym.C0, t0, sd, eps)
-  JuliaCall::julia_command(sprintf("%s = %s",
+  JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
 
   out <- list(juliavar = juliavar, juliacode = juliacode,
@@ -87,7 +87,7 @@ sampler.GGMC <- function(beta = 0.1, l = 1.0,
   juliacode <- sprintf("ascii_GGMC(; beta = %ff0, l = %ff0, sadapter = %s, madapter = %s, steps = %i)",
                        beta, l, sadapter$juliavar, madapter$juliavar, steps)
 
-  JuliaCall::julia_command(sprintf("%s = %s",
+  JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
 
   out <- list(juliavar = juliavar,
@@ -123,7 +123,7 @@ sampler.HMC <- function(l, path_len,
   juliavar <- get_random_symbol()
   juliacode <- sprintf("HMC(%ff0, %i; sadapter = %s, madapter = %s)",
                        l, path_len, sadapter$juliavar, madapter$juliavar)
-  JuliaCall::julia_command(sprintf("%s = %s",
+  JuliaCall::julia_command(sprintf("%s = %s;",
                            juliavar, juliacode))
 
   out <- list(juliavar = juliavar,
@@ -164,7 +164,7 @@ sampler.SGNHTS <- function(l, sigmaA = 1, xi = 1, mu = 1,
   juliacode <- sprintf("ascii_SGNHTS(%ff0, %ff0; xi = %ff0, mu = %ff0, madapter = %s)",
                        l, sigmaA, xi, mu, madapter$juliavar)
 
-  JuliaCall::julia_command(sprintf("%s = %s",
+  JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
 
   out <- list(juliavar = juliavar,
@@ -210,7 +210,7 @@ mcmc <- function(bnn, batchsize, numsamples,
   if (!is.null(start_value)){
     sym.start_value <- get_random_symbol()
     JuliaCall::julia_assign(sym.start_value, start_value)
-    JuliaCall::julia_command(sprintf("%s = Float32.(%s)",
+    JuliaCall::julia_command(sprintf("%s = Float32.(%s);",
                                      sym.start_value, sym.start_value))
     juliacode <- sprintf("ascii_mcmc(%s, %i, %i, %s; continue_sampling = %s, start_value = %s)",
                          bnn$juliavar, batchsize, numsamples,

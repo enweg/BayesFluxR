@@ -18,7 +18,7 @@ initialise.allsame <- function(dist, like, prior){
   juliacode <- sprintf("InitialiseAllSame(%s, %s, %s)",
                        dist$juliavar, like$juliavar, prior$juliavar)
   juliavar <- get_random_symbol()
-  JuliaCall::julia_command(sprintf("%s = %s",
+  JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
   out <- list(juliavar = juliavar, juliacode = juliacode)
   return(out)
