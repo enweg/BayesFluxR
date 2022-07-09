@@ -26,7 +26,17 @@ prior_predictive <- function(bnn, n = 1){
 }
 
 
-
+#' Draw from the posterior predictive distribution
+#'
+#' @param bnn a BNN obtained using \code{link{BNN}}
+#' @param posterior_samples a vector or matrix containing posterior
+#' samples. This can be obtained using \code{\link{mcmc}}, or \code{\link{bayes_by_backprop}}
+#' or \code{\link{find_mode}}.
+#' @param x input variables. If `NULL` (default), traning values will be used.
+#'
+#' @return A matrix whose columns are the posterior predictive draws.
+#'
+#' @export
 posterior_predictive <- function(bnn, posterior_samples, x = NULL){
   if (is.null(x)){
     x <- bnn$x

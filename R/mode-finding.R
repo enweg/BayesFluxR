@@ -62,6 +62,18 @@ opt.RMSProp <- function(eta = 0.001, rho = 0.9, eps = 1e-8){
   return(out)
 }
 
+#' Find the MAP of a BNN using SGD
+#'
+#' @param bnn a BNN obtained using \code{\link{BNN}}
+#' @param optimiser an optimiser. These start with `opt.`.
+#' See for example \code{\link{opt.ADAM}}
+#' @param batchsize batch size
+#' @param epochs number of epochs to run for
+#'
+#' @return Returns a vector. Use \code{\link{posterior_predictive}}
+#' to obtain a prediction using this MAP estimate.
+#'
+#' @export
 find_mode <- function(bnn, optimiser, batchsize, epochs){
   juliacode <- sprintf("find_mode(%s, %i, %i, FluxModeFinder(%s, %s); showprogress = true)",
                        bnn$juliavar, batchsize, epochs, bnn$juliavar, optimiser$juliavar)

@@ -1,5 +1,28 @@
 
-
+#' Use Bayes By Backprop to find Variational Approximation to BNN.
+#'
+#' This was proposed in Blundell, C., Cornebise, J., Kavukcuoglu, K., & Wierstra,
+#' D. (2015, June). Weight uncertainty in neural network. In International
+#' conference on machine learning (pp. 1613-1622). PMLR.
+#'
+#'@param bnn a BNN obtained using \code{\link{BNN}}
+#'@param batchsize batch size
+#'@param epochs number of epochs to run for
+#'@param mc_samples samples to use in each iteration for the MC approximation
+#'usually one is enough.
+#'@param opt An optimiser. These all start with `opt.`. See for example \code{\link{opt.ADAM}}
+#'@param n_samples_convergence At the end of each iteration convergence is checked using this
+#'many MC samples.
+#'
+#'@return a list containing
+#'\itemize{
+#'    \item `juliavar` - julia variable storing VI
+#'    \item `juliacode` - julia representation of function call
+#'    \item `params` - variational family parameters for each iteration
+#'    \item `losses` - BBB loss in each iteration
+#'}
+#'
+#'@export
 bayes_by_backprop <- function(bnn, batchsize, epochs,
                               mc_samples = 1,
                               opt = opt.ADAM(),
@@ -26,7 +49,14 @@ bayes_by_backprop <- function(bnn, batchsize, epochs,
   return(out)
 }
 
-
+#' Draw samples form a variational family.
+#'
+#' @param vi obtained using \code{\link{bayes_by_backprop}}
+#' @param n number of samples
+#'
+#' @return a matrix whose columns are draws from the variational posterior
+#'
+#' @export
 vi.get_samples <- function(vi, n = 1){
   samples <- JuliaCall::julia_eval(sprintf("rand(%s[1], %i)", vi$juliavar, n))
   return(samples)
