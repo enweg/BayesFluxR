@@ -168,10 +168,92 @@ data.frame(
 ```
 
 
-
-----
-
 ## MCMC Methods
+
+BFluxR implements various Markov Chain Monte Carlo methods that can be use to obtain approximate draws from the posterior. Currently implemented are 
+
+- Stochastic Gradient Langevin Dynamics (SGLD): `sampler.SGLD`
+- Stochastic Gradient Nose-Hoover Thermostat (SGNHTS): `sampler.SGNHTS`
+- Gradient Guided Monte Carlo (GGMC): `sampler.GGMC`
+- Hamiltonian Monte Carlo (HMC): `sampler.HMC`
+- Adaptive Metropolis Hastings (AdaptiveMH): `sampler.AdaptiveMH`
+
+Additionally, BFluxR allows for adaptation of mass matrices and stepsizes for some of the samplers above:
+
+- Mass adaptation via `madapter.DiagCov`, `madapter.FullCov`, `madapter.FixedMassMatrix` or `madapter.RMSProp` can be done for SGNHTS, GGMC, and HMC
+- Step size adaptation via `sadapter.Const` or `sadapter.DualAverage` can be done for GGMC and HMC since these two are the only samplers using both gradients and a Metropolis-Hastings accept/reject step. 
+
+```{r}
+# sampling via sgld
+sampler <- sampler.SGLD(stepsize_a = 1.0)
+samples.sgld <- mcmc(bnn, 10, 10000, sampler) # batchsize 10 and 1000 samples
+
+# sampling via SGNHTS
+sampler <- sampler.SGNHTS(1e-2)
+samples.sgnhts <- mcmc(bnn, 10, 10000, sampler)
+
+# sampling using GGMC with fixed mass but stepsize adaptation
+madapter = madapter.FixedMassMatrix()
+sadapter = sadapter.DualAverage(1000, initial_stepsize = 1) # 1000 adaptation steps
+sampler <- sampler.GGMC(l = 1, sadapter = sadapter, madapter = madapter)
+samples.ggmc <- mcmc(bnn, 10, 10000, sampler)
+
+# sampling using HMC
+# This time batchsize is is length of y thus no batching
+sadapter <- sadapter.DualAverage(1000, initial_stepsize = 0.001)
+madapter <- madapter.FixedMassMatrix()
+sampler <- sampler.HMC(l = 0.001, path_len = 5, sadapter = sadapter, madapter = madapter)
+samples.hmc <- mcmc(bnn, length(y.train), 10000, sampler)
+
+# sampling using Adaptive MH
+# this does not use any gradients so we start at a mode 
+sampler <- sampler.AdaptiveMH(bnn, 1000, 0.1)
+samples.amh <- mcmc(bnn, 10, 10000, sampler, start_value = mode)
+```
+
+All of these samples can be used in the same way. For example, we can use the samples obtained using SGNHTS to draw from the posterior predictive. *We are again not really interested in the actual parameters, but much more in the posterior predictive values and the network output space*. 
+
+```{r}
+post_values.train <- posterior_predictive(bnn, samples.sgnhts$samples, x = x.train)
+post_values.test <- posterior_predictive(bnn, samples.sgnhts$samples, x = x.test)
+
+
+yhat.train <- apply(post_values.train, 1, mean)
+upper.train <- apply(post_values.train, 1, function(x) quantile(x, 0.975))
+lower.train <- apply(post_values.train, 1, function(x) quantile(x, 0.025))
+
+yhat.test <- apply(post_values.test, 1, mean)
+upper.test <- apply(post_values.test, 1, function(x) quantile(x, 0.975))
+lower.test <- apply(post_values.test, 1, function(x) quantile(x, 0.025))
+
+
+data.frame(
+  mse.train = mean((y.train - yhat.train)^2),
+  mse.test = mean((y.test - yhat.test)^2),
+  coverage.train = mean(((y.train < upper.train) & (y.train > lower.train))),
+  coverage.test = mean(((y.test < upper.test) & (y.test > lower.test)))
+)
+
+```
+
+It is often a good idea to check whether at least the parameters additionally introduces by the likelihood have reasonable chains. Although better statistics exist, here we will only check it visually. Sigma is here given by the last parameter. In general, if the likelihood introduces k parameters, then the last k parameters in each draw are those of the likelihood.
+
+```{r}
+s <- samples.sgnhts$samples
+sigma <- s[nrow(s), ]
+plot.ts(sigma)
+```
+
+What if we were not happy or if the chain had not yet converged? In that case we can just continue sampling instead of having to start fresh. 
+
+```{r}
+samples.sgnhts.cont <- mcmc(bnn, 10, 20000, sampler = samples.sgnhts$sampler, continue_sampling = TRUE)
+
+list(
+  dim(samples.sgnhts.cont$samples), 
+  all.equal(samples.sgnhts$samples, samples.sgnhts.cont$samples[, 1:10000])
+)
+```
 
 ## Recurrent Structures
 
