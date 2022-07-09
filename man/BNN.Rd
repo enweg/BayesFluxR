@@ -25,6 +25,10 @@ List with the following content
 \itemize{
     \item `juliavar` - the julia variable containing the BNN
     \item `juliacode` - the string representation of the BNN
+    \item `x` - x
+    \item `juliax` - julia variable holding x
+    \item `y` - y
+    \item `juliay` - julia variable holding y
 }
 }
 \description{

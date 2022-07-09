@@ -41,8 +41,50 @@ We are now ready to start exploring BFluxR. We first need to load the package an
 
 ```{r}
 library(BFluxR)
-BFluxR_setup(JULIA_HOME = "/Applications/Julia-1.7-Rosetta.app/Contents/Resources/julia/bin/", seed = 6150533)
+BFluxR_setup(seed = 6150533, env_path = "/tmp")
 ```
+
+
+```{r}
+net <- Chain(Dense(1, 1, "tanh"), Dense(1, 1))
+prior <- prior.gaussian(net, 0.5)
+like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+init <- initialise.allsame(Normal(0, 0.5), like, prior)
+```
+
+
+```{r}
+x <- matrix(rnorm(100), nrow = 1)
+y <- rnorm(100)
+bnn <- BNN(x, y, like, prior, init)
+```
+
+
+```{r}
+y <- rnorm(500)
+tensor <- tensor_embed_mat(matrix(y, ncol = 1), len_seq = 11)
+y <- tensor[11, , ]
+x <- tensor[1:10, , , drop = FALSE]
+net <- Chain(RNN(1, 1))
+prior <- prior.gaussian(net, 1.0)
+like <- likelihood.seqtoone_normal(net, Gamma(2.0, 0.5))
+init <- initialise.allsame(Normal(0, 0.5), like, prior)
+bnn <- BNN(x, y, like, prior, init)
+```
+
+
+
+```{r}
+
+```
+
+
+
+
+
+
+# Old README CONTENT
+
 
 After loading BFluxR and running the setup, we are now ready to experiment around. To create a Bayesian Neural Network, we first need a Neural Network. In the Flux.jl context and thus also here, a network is defined as a chain of layers. This is intuitively represented in the syntax below, which creates a feedforward neural network with one hidden layer with `tanh` activation function. The last `Dense(1, 1)` statement are the output connection. The chain below thus says: Feed a vector $x$ into the network. Tranform this input via $act=tanh(x'w_1 + b_1)$. The output is then given by $\hat{y} = act'w_2 + b_2$. 
 

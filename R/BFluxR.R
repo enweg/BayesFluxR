@@ -114,6 +114,10 @@ Chain <- function(...){
 #' \itemize{
 #'     \item `juliavar` - the julia variable containing the BNN
 #'     \item `juliacode` - the string representation of the BNN
+#'     \item `x` - x
+#'     \item `juliax` - julia variable holding x
+#'     \item `y` - y
+#'     \item `juliay` - julia variable holding y
 #' }
 #'
 #' @export
@@ -137,7 +141,8 @@ BNN <- function(x, y, like, prior, init){
   JuliaCall::julia_command(sprintf("%s = %s",
                            juliavar, juliacode))
 
-  out <- list(juliavar = juliavar, juliacode = juliacode)
+  out <- list(juliavar = juliavar, juliacode = juliacode,
+              x = x, y = y, juliax = sym.x, juliay = sym.y)
   return(out)
 }
 
