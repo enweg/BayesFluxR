@@ -257,6 +257,72 @@ list(
 
 ## Recurrent Structures
 
+Next to Dense layers, BFluxR currently supports the use of RNN and LSTM layers. Currently only seq-to-one tasks are supported (only those likelihoods are implemented) and extension possibilities do currently only exist in the Julia version, but the plan is to update this soon. 
+
+Say we have a time series $y$ with possibly non-linear dynamics. We can then split this time series into overlapping subsequences and use each of these subsequences to predict the value that would come in $y$ after the subsequence ends. This way we can train an RNN or LSTM network with a single time series. 
+
+To support the above, BFluxR comes with a utility function `tensor_embed_mat` which takes a matrix of time series and embeds it into a tensor consisting of dimensions $seqlen \times numvariables \times numsubsequences$. 
+
+```{r}
+# We want to split the single TS into overlapping subsequences of 
+# length 10 and use these to predict the next observation
+y <- arima.sim(list(ar = 0.8), n = 600)
+tensor <- tensor_embed_mat(matrix(y, ncol = 1), len_seq = 10 + 1)
+dim(tensor)
+```
+
+We now have a tensor with subsequences of length 11, the first 10 elements of each sequence are used to predict the 11th element. 
+
+```{r}
+y.rnn <- tensor[11, , ]
+x.rnn <- tensor[1:10, , ,drop = FALSE]
+
+train_to <- floor(5/6 * length(y.rnn))
+y.train <- y.rnn[1:train_to]
+y.test <- y.rnn[(train_to+1):length(y.rnn)]
+x.train <- x.rnn[, , 1:train_to, drop = FALSE]
+x.test <- x.rnn[, , (train_to+1):length(y.rnn), drop = FALSE]
+```
+
+After bringing the data into the right format above, the rest of the functionality is the same as for Feedforward architectures: 
+
+```{r}
+net <- Chain(RNN(1, 1), Dense(1, 1))
+prior <- prior.mixturescale(net, 2.0, 0.1, 0.99)
+like <- likelihood.seqtoone_normal(net, Gamma(2.0, 0.5))
+init <- initialise.allsame(Normal(0, 0.5), like, prior)
+bnn <- BNN(x.train, y.train, like, prior, init)
+```
+
+One thing not discussed above is that BFluxR also allows to draw from the prior_predictive distribution. This often shows that the priors currently used in standard work are often not the best and much work could be done here. 
+
+```{r}
+prior_values <- prior_predictive(bnn, n = 10)
+plot(x = 1:length(y.train), y = y.train, type = "l", xlab = "Time", ylab = "", main = "Prior Draws", col = "red")
+for (i in 1:ncol(prior_values)){
+  lines(prior_values[, i], col = "black", lty = 2)
+}
+legend("topright", c("Training Data", "Prior Draw"), col = c("red", "black"), lty = c(1, 2))
+```
+
+Estimation works the same as for Feedforward structures. For example, we can estimate the model using SGNHTS
+
+```{r}
+sampler <- sampler.SGNHTS(0.01)
+chain.mcmc <- mcmc(bnn, 10, 10000, sampler)
+```
+
+Ans obtain the posterior preditive draws for the test data and compare it to the actual values: 
+
+```{r}
+post_values.test <- posterior_predictive(bnn, chain.mcmc$samples, x = x.test)
+
+yhat.test <- apply(post_values.test, 1, mean)
+plot(y.test, type = "l", xlab = "Time", ylab = "", main = "Test data comparison", col = "black")
+lines(yhat.test, col = "red")
+legend("topleft", c("Data", "Prediction"), col = c("black", "red"), lty = c(1, 1))
+```
+
 ## Overview: Estimation 
 
 BFluxR/BFlux currently implements Bayesian estimation on three different accuracy levels. The first is modal approximations which are implemented using Diagonal-multivariate-Gaussian Laplace approximations of a mode. These can also be used as a mixture if the approximations are done for multiple modes. This follows @bda3. Modal approximations can be corrected using Sampling-Importance-Resampling, as suggested in @bda3. 
