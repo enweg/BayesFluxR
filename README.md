@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![test-coverage](https://github.com/enweg/BFluxR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/test-coverage.yaml)
-[![R-CMD-check](https://github.com/enweg/BFluxR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/enweg/BFluxR/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/check-standard.yaml)
 <!-- badges: end -->
 
 **Goals and Introduction**
