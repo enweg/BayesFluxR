@@ -58,7 +58,7 @@ BFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, env_path =
   sym.env <- get_random_symbol()
   JuliaCall::julia_assign(sym.env, env_path)
   JuliaCall::julia_command(sprintf("Pkg.activate(%s)", sym.env))
-  pkgs_needed <- list("https://github.com/enweg/BFlux.git", "Flux@0.13.0", "Distributions", "Random")
+  pkgs_needed <- list("https://github.com/enweg/BFlux.git", "Flux", "Distributions", "Random")
   if (pkg_check){
     do.call(.install_pkg, pkgs_needed)
   }
