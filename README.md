@@ -4,6 +4,9 @@
 # BFluxR
 
 <!-- badges: start -->
+
+[![test-coverage](https://github.com/enweg/BFluxR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/test-coverage.yaml)
+[![R-CMD-check](https://github.com/enweg/BFluxR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 **Goals and Introduction**
@@ -64,7 +67,7 @@ library(BFluxR)
 #> 
 #>     Gamma
 BFluxR_setup(seed = 6150533, env_path = "/tmp", pkg_check = FALSE)
-#> Julia version 1.7.3 at location /Users/enricowegner/Library/Application Support/org.R-project.R/R/JuliaCall/julia/1.7.3/Julia-1.7.app/Contents/Resources/julia/bin will be used.
+#> Julia version 1.8.3 at location /Users/enricowegner/Library/Application Support/org.R-project.R/R/JuliaCall/julia/1.8.3/Julia-1.8.app/Contents/Resources/julia/bin will be used.
 #> Loading setup script for JuliaCall...
 #> Finish loading setup script for JuliaCall.
 #> Set the seed of Julia and R to 6150533
@@ -81,7 +84,7 @@ is the output connection. The chain below thus says: Feed a vector
 into the network. Tranform this input via
 ![act=tanh(x'w_1 + b_1)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;act%3Dtanh%28x%27w_1%20%2B%20b_1%29 "act=tanh(x'w_1 + b_1)").
 The output is then given by
-![\\hat{y} = act'w_2 + b_2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Chat%7By%7D%20%3D%20act%27w_2%20%2B%20b_2 "\hat{y} = act'w_2 + b_2").
+![\hat{y} = act'w_2 + b_2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Chat%7By%7D%20%3D%20act%27w_2%20%2B%20b_2 "\hat{y} = act'w_2 + b_2").
 
 ``` r
 net <- Chain(Dense(1, 1, "tanh"), Dense(1, 1))
@@ -258,22 +261,21 @@ BFluxR implements various Markov Chain Monte Carlo methods that can be
 use to obtain approximate draws from the posterior. Currently
 implemented are
 
--   Stochastic Gradient Langevin Dynamics (SGLD): `sampler.SGLD`
--   Stochastic Gradient Nose-Hoover Thermostat (SGNHTS):
-    `sampler.SGNHTS`
--   Gradient Guided Monte Carlo (GGMC): `sampler.GGMC`
--   Hamiltonian Monte Carlo (HMC): `sampler.HMC`
--   Adaptive Metropolis Hastings (AdaptiveMH): `sampler.AdaptiveMH`
+- Stochastic Gradient Langevin Dynamics (SGLD): `sampler.SGLD`
+- Stochastic Gradient Nose-Hoover Thermostat (SGNHTS): `sampler.SGNHTS`
+- Gradient Guided Monte Carlo (GGMC): `sampler.GGMC`
+- Hamiltonian Monte Carlo (HMC): `sampler.HMC`
+- Adaptive Metropolis Hastings (AdaptiveMH): `sampler.AdaptiveMH`
 
 Additionally, BFluxR allows for adaptation of mass matrices and
 stepsizes for some of the samplers above:
 
--   Mass adaptation via `madapter.DiagCov`, `madapter.FullCov`,
-    `madapter.FixedMassMatrix` or `madapter.RMSProp` can be done for
-    SGNHTS, GGMC, and HMC
--   Step size adaptation via `sadapter.Const` or `sadapter.DualAverage`
-    can be done for GGMC and HMC since these two are the only samplers
-    using both gradients and a Metropolis-Hastings accept/reject step.
+- Mass adaptation via `madapter.DiagCov`, `madapter.FullCov`,
+  `madapter.FixedMassMatrix` or `madapter.RMSProp` can be done for
+  SGNHTS, GGMC, and HMC
+- Step size adaptation via `sadapter.Const` or `sadapter.DualAverage`
+  can be done for GGMC and HMC since these two are the only samplers
+  using both gradients and a Metropolis-Hastings accept/reject step.
 
 ``` r
 # sampling via sgld
@@ -384,7 +386,7 @@ with a single time series.
 To support the above, BFluxR comes with a utility function
 `tensor_embed_mat` which takes a matrix of time series and embeds it
 into a tensor consisting of dimensions
-![seqlen \\times numvariables \\times numsubsequences](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;seqlen%20%5Ctimes%20numvariables%20%5Ctimes%20numsubsequences "seqlen \times numvariables \times numsubsequences").
+![seqlen \times numvariables \times numsubsequences](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;seqlen%20%5Ctimes%20numvariables%20%5Ctimes%20numsubsequences "seqlen \times numvariables \times numsubsequences").
 
 ``` r
 # We want to split the single TS into overlapping subsequences of 

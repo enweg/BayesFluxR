@@ -17,6 +17,8 @@ knitr::opts_chunk$set(
 # BFluxR
 
 <!-- badges: start -->
+[![test-coverage](https://github.com/enweg/BFluxR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/test-coverage.yaml)
+[![R-CMD-check](https://github.com/enweg/BFluxR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 **Goals and Introduction**
