@@ -21,6 +21,10 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/enweg/BFluxR/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/check-standard.yaml)
 <!-- badges: end -->
 
+> :warning: **Known Issues**
+> 1. The first call of `BFluxR_setup` can take a while. On some machines this could take twenty minutes or longer. This is most likely due to that Julia first needs to be set up. If you want to check whether everything is still going well, you can always check in the task manager if the Julia background process is still busy. As long as this is the case, everything is going right. 
+> 2. Please always call `library(BFlux)` before calling `BFluxR_setup`. Calling `BFluxR::BFluxR_setup` throws an error that I do not know how to solve at this point (feel free to open a pull request)
+
 **Goals and Introduction**
 
 BFluxR is a R interface to BFlux.jl which itself extends the famous Flux.jl machine learning library in Julia. BFlux is meant to make research and testing of Bayesian Neural Networks easy. It is not meant for production, but rather for explorations. Currently only regression problems are being kept in mind during the development, since those are the problems I am working on. Extending things to classification problems should be rather straight forward though, since BFlux allows custom implementation of likelihoods and priors (at least in the Julia version). In the R version presented here, this is currently not possible. 
