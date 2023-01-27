@@ -9,15 +9,18 @@
 [![R-CMD-check](https://github.com/enweg/BFluxR/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/check-standard.yaml)
 <!-- badges: end -->
 
-> :warning: **Known Issues** 1. The first call of `BFluxR_setup` can
-> take a while. On some machines this could take twenty minutes or
-> longer. This is most likely due to that Julia first needs to be set
-> up. If you want to check whether everything is still going well, you
-> can always check in the task manager if the Julia background process
-> is still busy. As long as this is the case, everything is going right.
-> 2. Please always call `library(BFlux)` before calling `BFluxR_setup`.
-> Calling `BFluxR::BFluxR_setup` throws an error that I do not know how
-> to solve at this point (feel free to open a pull request)
+> :warning: **Known Issues**
+>
+> - The first call of `BFluxR_setup` can take a while. On some machines
+>   this could take twenty minutes or longer. This is most likely due to
+>   that Julia first needs to be set up. If you want to check whether
+>   everything is still going well, you can always check in the task
+>   manager if the Julia background process is still busy. As long as
+>   this is the case, everything is going right.
+>
+> - Please always call `library(BFlux)` before calling `BFluxR_setup`.
+>   Calling `BFluxR::BFluxR_setup` throws an error that I do not know
+>   how to solve at this point (feel free to open a pull request)
 
 **Goals and Introduction**
 
