@@ -21,6 +21,21 @@
 > - Please always call `library(BFlux)` before calling `BFluxR_setup`.
 >   Calling `BFluxR::BFluxR_setup` throws an error that I do not know
 >   how to solve at this point (feel free to open a pull request)
+>
+> - Some systems, especially on company computers, cause failures in the
+>   automatic setup of BFluxR. In these cases, please try the following
+>
+>   1.  Install Julia manually by following the official instructions.
+>       Link this manual installation to BFluxR by calling
+>       `BFluxR_setup(JULIA_HOME="path-to-julia-binary", env_path="path-to-some-writable-folder", pkg_check=TRUE)`
+>   2.  Make usre that the environment path you are choosing is
+>       writable. On some systems Julia is not allowed to write to some
+>       locations. A safe choice is usually to choose a folder on the
+>       Desktop. Note that in the example below I am using the temporary
+>       folder on a Mac. This will often not work on company computers.
+>   3.  If the above still do not work, try to force reinstall BFluxR
+>       and try the steps again. If it still does not work, please open
+>       an issue.
 
 **Goals and Introduction**
 
@@ -42,15 +57,14 @@ syntax. Before we demonstrate this, we first need to install and load
 BFluxR. Installation is currently only possible from Github:
 
 ``` r
-# devtools::install_github("enweg/BFluxR")
+devtools::install_github("enweg/BFluxR")
+#> Skipping install of 'BFluxR' from a github remote, the SHA1 (5c211dd4) has not changed since last install.
+#>   Use `force = TRUE` to force installation
 ```
 
 BFluxR depends on BFlux.jl which is a library written in Julia. Hence,
 to run BFluxR, we need a way to access Julia. This is provided by the
-JuliaCall library. So we also need to install that library. I recommend
-installing a forked version, since the current official version installs
-an old version of Julia, which is not supported by BFlux. This version
-should be automatically installed when you install BFlux.
+JuliaCall library. So we also need to install that library.
 
 We are now ready to start exploring BFluxR. We first need to load the
 package and run the setup. This will install Julia if you do not yet
@@ -73,17 +87,14 @@ R and in Julia. If you wish to set a seed later on, please use
 `.set_seed` which sets the seed in both Julia and R.
 
 ``` r
-library(BFluxR)
-#> 
-#> Attaching package: 'BFluxR'
-#> The following object is masked from 'package:stats':
-#> 
-#>     Gamma
-BFluxR_setup(seed = 6150533, env_path = "/tmp", pkg_check = FALSE)
-#> Julia version 1.8.3 at location /Users/enricowegner/Library/Application Support/org.R-project.R/R/JuliaCall/julia/1.8.3/Julia-1.8.app/Contents/Resources/julia/bin will be used.
-#> Loading setup script for JuliaCall...
-#> Finish loading setup script for JuliaCall.
-#> Set the seed of Julia and R to 6150533
+library(BFluxR);
+# The line below sets up everything automatically, but sometimes fails
+# BFluxR_setup(seed = 6150533, env_path = "/tmp", pkg_check = TRUE)
+# If the automatic setup failed or you wish to use a specific verions of Julia, 
+# then use the JULIA_HOME argument. The path below is for a Mac. 
+BFluxR_setup(JULIA_HOME="/Applications/Julia-1.8.app/Contents/Resources/julia/bin/", 
+             seed = 6150533, 
+             env_path = "/tmp");
 ```
 
 After loading BFluxR and running the setup, we are now ready to
@@ -92,12 +103,9 @@ Neural Network. In the Flux.jl context and thus also here, a network is
 defined as a chain of layers. This is intuitively represented in the
 syntax below, which creates a Feedforward Neural Network with one hidden
 layer with `tanh` activation function. The last `Dense(1, 1)` statement
-is the output connection. The chain below thus says: Feed a vector
-![x](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;x "x")
-into the network. Tranform this input via
-![act=tanh(x'w_1 + b_1)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;act%3Dtanh%28x%27w_1%20%2B%20b_1%29 "act=tanh(x'w_1 + b_1)").
-The output is then given by
-![\hat{y} = act'w_2 + b_2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Chat%7By%7D%20%3D%20act%27w_2%20%2B%20b_2 "\hat{y} = act'w_2 + b_2").
+is the output connection. The chain below thus says: Feed a vector $x$
+into the network. Tranform this input via $act=tanh(x'w_1 + b_1)$. The
+output is then given by $\hat{y} = act'w_2 + b_2$.
 
 ``` r
 net <- Chain(Dense(1, 1, "tanh"), Dense(1, 1))
@@ -387,19 +395,16 @@ layers. Currently only seq-to-one tasks are supported (only those
 likelihoods are implemented) and extension possibilities do currently
 only exist in the Julia version, but the plan is to update this soon.
 
-Say we have a time series
-![y](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;y "y")
-with possibly non-linear dynamics. We can then split this time series
-into overlapping subsequences and use each of these subsequences to
-predict the value that would come in
-![y](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;y "y")
-after the subsequence ends. This way we can train an RNN or LSTM network
-with a single time series.
+Say we have a time series $y$ with possibly non-linear dynamics. We can
+then split this time series into overlapping subsequences and use each
+of these subsequences to predict the value that would come in $y$ after
+the subsequence ends. This way we can train an RNN or LSTM network with
+a single time series.
 
 To support the above, BFluxR comes with a utility function
 `tensor_embed_mat` which takes a matrix of time series and embeds it
 into a tensor consisting of dimensions
-![seqlen \times numvariables \times numsubsequences](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;seqlen%20%5Ctimes%20numvariables%20%5Ctimes%20numsubsequences "seqlen \times numvariables \times numsubsequences").
+$seqlen \times numvariables \times numsubsequences$.
 
 ``` r
 # We want to split the single TS into overlapping subsequences of 
@@ -472,9 +477,3 @@ legend("topleft", c("Data", "Prediction"), col = c("black", "red"), lty = c(1, 1
 ```
 
 <img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
-
-## Overview: Estimation
-
-## Current Problems and Shortcomings
-
-## References
