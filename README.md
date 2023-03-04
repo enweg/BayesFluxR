@@ -11,19 +11,21 @@
 
 > :warning: **Known Issues**
 >
-> - The first call of `BayesFluxR_setup` can take a while. On some machines
->   this could take twenty minutes or longer. This is most likely due to
->   that Julia first needs to be set up. If you want to check whether
->   everything is still going well, you can always check in the task
->   manager if the Julia background process is still busy. As long as
->   this is the case, everything is going right.
+> - The first call of `BayesFluxR_setup` can take a while. On some
+>   machines this could take twenty minutes or longer. This is most
+>   likely due to that Julia first needs to be set up. If you want to
+>   check whether everything is still going well, you can always check
+>   in the task manager if the Julia background process is still busy.
+>   As long as this is the case, everything is going right.
 >
-> - Please always call `library(BFlux)` before calling `BayesFluxR_setup`.
->   Calling `BayesFluxR::BayesFluxR_setup` throws an error that I do not know
->   how to solve at this point (feel free to open a pull request)
+> - Please always call `library(BFlux)` before calling
+>   `BayesFluxR_setup`. Calling `BayesFluxR::BayesFluxR_setup` throws an
+>   error that I do not know how to solve at this point (feel free to
+>   open a pull request)
 >
 > - Some systems, especially on company computers, cause failures in the
->   automatic setup of BayesFluxR. In these cases, please try the following
+>   automatic setup of BayesFluxR. In these cases, please try the
+>   following
 >
 >   1.  Install Julia manually by following the official instructions.
 >       Link this manual installation to BayesFluxR by calling
@@ -33,9 +35,9 @@
 >       locations. A safe choice is usually to choose a folder on the
 >       Desktop. Note that in the example below I am using the temporary
 >       folder on a Mac. This will often not work on company computers.
->   3.  If the above still do not work, try to force reinstall BayesFluxR
->       and try the steps again. If it still does not work, please open
->       an issue.
+>   3.  If the above still do not work, try to force reinstall
+>       BayesFluxR and try the steps again. If it still does not work,
+>       please open an issue.
 
 **Goals and Introduction**
 
@@ -52,22 +54,21 @@ possible.
 
 ## Basics
 
-BayesFluxR and BFlux are based on Flux.jl and thus take over a lot of Flux’s
-syntax. Before we demonstrate this, we first need to install and load
-BayesFluxR. Installation is currently only possible from Github:
+BayesFluxR and BFlux are based on Flux.jl and thus take over a lot of
+Flux’s syntax. Before we demonstrate this, we first need to install and
+load BayesFluxR. Installation is currently only possible from Github:
 
 ``` r
-devtools::install_github("enweg/BayesFluxR")
-#> Skipping install of 'BayesFluxR' from a github remote, the SHA1 (5c211dd4) has not changed since last install.
-#>   Use `force = TRUE` to force installation
+# devtools::install_github("enweg/BayesFluxR")
 ```
 
-BayesFluxR depends on BFlux.jl which is a library written in Julia. Hence,
-to run BayesFluxR, we need a way to access Julia. This is provided by the
-JuliaCall library. So we also need to install that library.
+BayesFluxR depends on BFlux.jl which is a library written in Julia.
+Hence, to run BayesFluxR, we need a way to access Julia. This is
+provided by the JuliaCall library. So we also need to install that
+library.
 
-We are now ready to start exploring BayesFluxR. We first need to load the
-package and run the setup. This will install Julia if you do not yet
+We are now ready to start exploring BayesFluxR. We first need to load
+the package and run the setup. This will install Julia if you do not yet
 have it and will install all the Julia dependencies, including BFlux.jl.
 If you already do have Julia installed, then the script will pick the
 Julia verion on your computer. If you, like me, have multiple versions
@@ -181,8 +182,8 @@ bnn <- BNN(x.train, y.train, like, prior, init)
 ## Mode and Modal Approximations
 
 The easiest way to test a BNN and to obtain a first estimate is by using
-the MAP or the mode of the posterior distribution. BayesFluxR achieves this
-by using stochastic gradient descent type of algorithms. Currently
+the MAP or the mode of the posterior distribution. BayesFluxR achieves
+this by using stochastic gradient descent type of algorithms. Currently
 implemented are `opt.ADAM`, `opt.RMSProp`, and `opt.Descent`.
 
 ``` r
@@ -278,8 +279,8 @@ data.frame(
 
 ## MCMC Methods
 
-BayesFluxR implements various Markov Chain Monte Carlo methods that can be
-use to obtain approximate draws from the posterior. Currently
+BayesFluxR implements various Markov Chain Monte Carlo methods that can
+be use to obtain approximate draws from the posterior. Currently
 implemented are
 
 - Stochastic Gradient Langevin Dynamics (SGLD): `sampler.SGLD`
@@ -390,8 +391,8 @@ list(
 
 ## Recurrent Structures
 
-Next to Dense layers, BayesFluxR currently supports the use of RNN and LSTM
-layers. Currently only seq-to-one tasks are supported (only those
+Next to Dense layers, BayesFluxR currently supports the use of RNN and
+LSTM layers. Currently only seq-to-one tasks are supported (only those
 likelihoods are implemented) and extension possibilities do currently
 only exist in the Julia version, but the plan is to update this soon.
 
@@ -440,8 +441,8 @@ init <- initialise.allsame(Normal(0, 0.5), like, prior)
 bnn <- BNN(x.train, y.train, like, prior, init)
 ```
 
-One thing not discussed above is that BayesFluxR also allows to draw from
-the prior_predictive distribution. This often shows that the priors
+One thing not discussed above is that BayesFluxR also allows to draw
+from the prior_predictive distribution. This often shows that the priors
 currently used in standard work are often not the best and much work
 could be done here.
 
