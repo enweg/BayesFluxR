@@ -4,7 +4,7 @@ Title: Implementation of Bayesian Neural Networks
 Version: 0.1.1
 Author: Enrico Wegner <e.wegner@student.maastrichtuniversity.nl>
 Maintainer: Enrico Wegner <e.wegner@student.maastrichtuniversity.nl>
-Description: BayesFluxR implements BayesFlux.jl for R; It extends the famous 
+Description: Implementation of BayesFlux.jl for R; It extends the famous 
              Flux.jl machine learning library to Bayesian Neural Networks. 
              The goal is not to have the fastest production ready 
              library, but rather to allow more people to be able 
@@ -14,7 +14,6 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
 Imports: 
-    abind,
     JuliaCall (>= 0.17.5),
     stats
 Suggests: 

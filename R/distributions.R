@@ -20,7 +20,7 @@ Gamma <- function(shape=2.0, scale=2.0){
   return(out)
 }
 
-#' Create an InverGamma Prior
+#' Create an Inverse-Gamma Prior
 #'
 #' Creates and Inverse Gamma prior in Julia using Distributions.jl
 #'
@@ -58,7 +58,7 @@ Normal <- function(mu=0, sigma=1){
 
 #' Truncates a Distribution
 #'
-#' Truncates a Julia Disribution between `lower` and `upper`.
+#' Truncates a Julia Distribution between `lower` and `upper`.
 #'
 #' @param dist A Julia Distribution created using \code{\link{Gamma}},
 #'             \code{\link{InverseGamma}} ...

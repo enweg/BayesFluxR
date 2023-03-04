@@ -32,7 +32,7 @@ prior_predictive <- function(bnn, n = 1){
 #' @param posterior_samples a vector or matrix containing posterior
 #' samples. This can be obtained using \code{\link{mcmc}}, or \code{\link{bayes_by_backprop}}
 #' or \code{\link{find_mode}}.
-#' @param x input variables. If `NULL` (default), traning values will be used.
+#' @param x input variables. If `NULL` (default), training values will be used.
 #'
 #' @return A matrix whose columns are the posterior predictive draws.
 #'

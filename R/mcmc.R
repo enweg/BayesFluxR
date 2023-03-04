@@ -152,7 +152,7 @@ sampler.HMC <- function(l, path_len,
 #' @param madapter Mass Adapter; Not used in original paper and thus
 #' has no theoretical backing
 #'
-#' @return a list with `juliava`, `juliacode` and all arguments provided
+#' @return a list with `juliavar`, `juliacode` and all arguments provided
 #'
 #' @export
 sampler.SGNHTS <- function(l, sigmaA = 1, xi = 1, mu = 1,

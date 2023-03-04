@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 > 
 > - Some systems, especially on company computers, cause failures in the automatic setup of BayesFluxR. In these cases, please try the following
 >   1. Install Julia manually by following the official instructions. Link this manual installation to BayesFluxR by calling `BayesFluxR_setup(JULIA_HOME="path-to-julia-binary", env_path="path-to-some-writable-folder", pkg_check=TRUE)`
->   2. Make usre that the environment path you are choosing is writable. On some systems Julia is not allowed to write to some locations. A safe choice is usually to choose a folder on the Desktop. Note that in the example below I am using the temporary folder on a Mac. This will often not work on company computers. 
+>   2. Make sure that the environment path you are choosing is writable. On some systems Julia is not allowed to write to some locations. A safe choice is usually to choose a folder on the Desktop. Note that in the example below I am using the temporary folder on a Mac. This will often not work on company computers. 
 >   3. If the above still do not work, try to force reinstall BayesFluxR and try the steps again. If it still does not work, please open an issue. 
 
 **Goals and Introduction**
@@ -46,7 +46,7 @@ BayesFluxR and BayesFlux are based on Flux.jl and thus take over a lot of Flux's
 
 BayesFluxR depends on BayesFlux.jl which is a library written in Julia. Hence, to run BayesFluxR, we need a way to access Julia. This is provided by the JuliaCall library. So we also need to install that library.
 
-We are now ready to start exploring BayesFluxR. We first need to load the package and run the setup. This will install Julia if you do not yet have it and will install all the Julia dependencies, including BayesFlux.jl. If you already do have Julia installed, then the script will pick the Julia verion on your computer. If you, like me, have multiple versions installed, then you can define the version you want to use by setting the `JULIA_HOME` variable to the path of the Julia version you want to use. 
+We are now ready to start exploring BayesFluxR. We first need to load the package and run the setup. This will install Julia if you do not yet have it and will install all the Julia dependencies, including BayesFlux.jl. If you already do have Julia installed, then the script will pick the Julia version on your computer. If you, like me, have multiple versions installed, then you can define the version you want to use by setting the `JULIA_HOME` variable to the path of the Julia version you want to use. 
 
 Running these lines for the first time can take a while, since it will possibly have to install Julia and all dependencies. After this, if you do no longer wish you check if all dependencies are available, you can set `pkg_check = FALSE`.
 
@@ -63,13 +63,13 @@ BayesFluxR_setup(JULIA_HOME="/Applications/Julia-1.8.app/Contents/Resources/juli
              env_path = "/tmp");
 ```
 
-After loading BayesFluxR and running the setup, we are now ready to experiment around. To create a Bayesian Neural Network, we first need a Neural Network. In the Flux.jl context and thus also here, a network is defined as a chain of layers. This is intuitively represented in the syntax below, which creates a Feedforward Neural Network with one hidden layer with `tanh` activation function. The last `Dense(1, 1)` statement is the output connection. The chain below thus says: Feed a vector $x$ into the network. Tranform this input via $act=tanh(x'w_1 + b_1)$. The output is then given by $\hat{y} = act'w_2 + b_2$. 
+After loading BayesFluxR and running the setup, we are now ready to experiment around. To create a Bayesian Neural Network, we first need a Neural Network. In the Flux.jl context and thus also here, a network is defined as a chain of layers. This is intuitively represented in the syntax below, which creates a Feedforward Neural Network with one hidden layer with `tanh` activation function. The last `Dense(1, 1)` statement is the output connection. The chain below thus says: Feed a vector $x$ into the network. Transform this input via $act=tanh(x'w_1 + b_1)$. The output is then given by $\hat{y} = act'w_2 + b_2$. 
 
 ```{r}
 net <- Chain(Dense(1, 1, "tanh"), Dense(1, 1))
 ```
 
-To transform this standard Neural Network into a Baysian NN, we need a likelihood and priors for all parameters. BayesFluxR view on priors and likelihoods might be a bit unintuitive at the beginning: a prior function only defines priors for the network parameters. Priors for all parameters introduced by the likelihood, such as the standard deviation, are defined in the likelihood functions. So, for example, we can use a Gaussian prior for all network parameters
+To transform this standard Neural Network into a Bayesian NN, we need a likelihood and priors for all parameters. BayesFluxR view on priors and likelihoods might be a bit unintuitive at the beginning: a prior function only defines priors for the network parameters. Priors for all parameters introduced by the likelihood, such as the standard deviation, are defined in the likelihood functions. So, for example, we can use a Gaussian prior for all network parameters
 
 ```{r}
 prior <- prior.gaussian(net, 0.5)  # sigma = 0.5
@@ -121,7 +121,7 @@ opt <- opt.ADAM()
 mode <- find_mode(bnn, opt, 10, 1000)
 ```
 
-We can use this mode estimat to draw from the posterior predictive. Given that the mode is just a single value of the posterior, we will replicate the mode estimate multiple times. This will still only correspond to the one point in the posterior distribution, but will deliver us multiple estimates (multiple draws from the posterior characterised by the MAP).
+We can use this mode estimate to draw from the posterior predictive. Given that the mode is just a single value of the posterior, we will replicate the mode estimate multiple times. This will still only correspond to the one point in the posterior distribution, but will deliver us multiple estimates (multiple draws from the posterior characterised by the MAP).
 
 ```{r}
 post_draws <- matrix(rep(mode, 1000), ncol = 1000)
@@ -331,7 +331,7 @@ sampler <- sampler.SGNHTS(0.01)
 chain.mcmc <- mcmc(bnn, 10, 10000, sampler)
 ```
 
-Ans obtain the posterior preditive draws for the test data and compare it to the actual values: 
+And obtain the posterior predictive draws for the test data and compare it to the actual values: 
 
 ```{r}
 post_values.test <- posterior_predictive(bnn, chain.mcmc$samples, x = x.test)

@@ -58,11 +58,11 @@ likelihood.feedforward_tdist <- function(chain, sig_prior, nu=30){
 #'
 #' This creates a likelihood of the form
 #' \deqn{y_i \sim Normal(net(x_i), \sigma), i=1,...,N}
-#' Here \eqn{x_i} is a sibsequence which will be fed through the recurrent
+#' Here \eqn{x_i} is a subsequence which will be fed through the recurrent
 #' network to obtain the final output \eqn{net(x_i) = \hat{y}_i}. Thus, if
 #' one has a single time series, and splits the single time series into subsequences
 #' of length K which are then used to predict the next output of the time series, then
-#' each \eqn{x_i} consists of K consecutive obsevations of the time series. In a sense
+#' each \eqn{x_i} consists of K consecutive observations of the time series. In a sense
 #' one constraints the maximum memory length of the network this way.
 #'
 #' @inheritParams likelihood.feedforward_normal
