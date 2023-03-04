@@ -2,7 +2,7 @@
 % Please edit documentation in R/BayesFluxR.R
 \name{BayesFluxR_setup}
 \alias{BayesFluxR_setup}
-\title{Set up of the Julia environment needed for BFlux}
+\title{Set up of the Julia environment needed for BayesFlux}
 \usage{
 BayesFluxR_setup(
   pkg_check = TRUE,

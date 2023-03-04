@@ -1,7 +1,7 @@
 
 testthat::test_that("Check Initialisation", {
   BayesFluxR_setup(env_path = "/tmp/", nthreads = 3)
-  expect_s3_class(JuliaCall::julia_eval("BFlux"), "JuliaObject")
+  expect_s3_class(JuliaCall::julia_eval("BayesFlux"), "JuliaObject")
   expect_s3_class(JuliaCall::julia_eval("Flux"), "JuliaObject")
   expect_s3_class(JuliaCall::julia_eval("Distributions"), "JuliaObject")
   expect_s3_class(JuliaCall::julia_eval("Random"), "JuliaObject")

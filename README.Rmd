@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 > 
 > - The first call of `BayesFluxR_setup` can take a while. On some machines this could take twenty minutes or longer. This is most likely due to that Julia first needs to be set up. If you want to check whether everything is still going well, you can always check in the task manager if the Julia background process is still busy. As long as this is the case, everything is going right. 
 > 
-> - Please always call `library(BFlux)` before calling `BayesFluxR_setup`. Calling `BayesFluxR::BayesFluxR_setup` throws an error that I do not know how to solve at this point (feel free to open a pull request)
+> - Please always call `library(BayesFluxR)` before calling `BayesFluxR_setup`. Calling `BayesFluxR::BayesFluxR_setup` throws an error that I do not know how to solve at this point (feel free to open a pull request)
 > 
 > - Some systems, especially on company computers, cause failures in the automatic setup of BayesFluxR. In these cases, please try the following
 >   1. Install Julia manually by following the official instructions. Link this manual installation to BayesFluxR by calling `BayesFluxR_setup(JULIA_HOME="path-to-julia-binary", env_path="path-to-some-writable-folder", pkg_check=TRUE)`
@@ -34,19 +34,19 @@ knitr::opts_chunk$set(
 
 **Goals and Introduction**
 
-BayesFluxR is a R interface to BFlux.jl which itself extends the famous Flux.jl machine learning library in Julia. BFlux is meant to make research and testing of Bayesian Neural Networks easy. It is not meant for production, but rather for explorations. Currently only regression problems are being kept in mind during the development, since those are the problems I am working on. Extending things to classification problems should be rather straight forward though, since BFlux allows custom implementation of likelihoods and priors (at least in the Julia version). In the R version presented here, this is currently not possible. 
+BayesFluxR is a R interface to BayesFlux.jl which itself extends the famous Flux.jl machine learning library in Julia. BayesFlux is meant to make research and testing of Bayesian Neural Networks easy. It is not meant for production, but rather for explorations. Currently only regression problems are being kept in mind during the development, since those are the problems I am working on. Extending things to classification problems should be rather straight forward though, since BayesFlux allows custom implementation of likelihoods and priors (at least in the Julia version). In the R version presented here, this is currently not possible. 
 
 ## Basics
 
-BayesFluxR and BFlux are based on Flux.jl and thus take over a lot of Flux's syntax. Before we demonstrate this, we first need to install and load BayesFluxR. Installation is currently only possible from Github: 
+BayesFluxR and BayesFlux are based on Flux.jl and thus take over a lot of Flux's syntax. Before we demonstrate this, we first need to install and load BayesFluxR. Installation is currently only possible from Github: 
 
 ```{r}
 # devtools::install_github("enweg/BayesFluxR")
 ```
 
-BayesFluxR depends on BFlux.jl which is a library written in Julia. Hence, to run BayesFluxR, we need a way to access Julia. This is provided by the JuliaCall library. So we also need to install that library.
+BayesFluxR depends on BayesFlux.jl which is a library written in Julia. Hence, to run BayesFluxR, we need a way to access Julia. This is provided by the JuliaCall library. So we also need to install that library.
 
-We are now ready to start exploring BayesFluxR. We first need to load the package and run the setup. This will install Julia if you do not yet have it and will install all the Julia dependencies, including BFlux.jl. If you already do have Julia installed, then the script will pick the Julia verion on your computer. If you, like me, have multiple versions installed, then you can define the version you want to use by setting the `JULIA_HOME` variable to the path of the Julia version you want to use. 
+We are now ready to start exploring BayesFluxR. We first need to load the package and run the setup. This will install Julia if you do not yet have it and will install all the Julia dependencies, including BayesFlux.jl. If you already do have Julia installed, then the script will pick the Julia verion on your computer. If you, like me, have multiple versions installed, then you can define the version you want to use by setting the `JULIA_HOME` variable to the path of the Julia version you want to use. 
 
 Running these lines for the first time can take a while, since it will possibly have to install Julia and all dependencies. After this, if you do no longer wish you check if all dependencies are available, you can set `pkg_check = FALSE`.
 
@@ -75,7 +75,7 @@ To transform this standard Neural Network into a Baysian NN, we need a likelihoo
 prior <- prior.gaussian(net, 0.5)  # sigma = 0.5
 ```
 
-and can define a Gaussian likelihood. The Gaussian likelihood also introduces a standard deviation though, which in BFlux terms must be given a prior when defining the likelihood: it is not included in the prior above, which applies only to the network parameters. Here we use a Gamma prior for the standard deviation.
+and can define a Gaussian likelihood. The Gaussian likelihood also introduces a standard deviation though, which in BayesFlux terms must be given a prior when defining the likelihood: it is not included in the prior above, which applies only to the network parameters. Here we use a Gamma prior for the standard deviation.
 
 ```{r}
 like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
@@ -88,14 +88,14 @@ For all of the estimation methods in BayesFluxR, we need some initial values. Ba
 init <- initialise.allsame(Normal(0, 0.5), like, prior)
 ```
 
-Now that we have priors on all parameters as well as a likelihood, all that is left is to have some data. Here we will take an AR(1) for the simple reason that time series applications were the first application for which BayesFluxR and BFlux were implemented. 
+Now that we have priors on all parameters as well as a likelihood, all that is left is to have some data. Here we will take an AR(1) for the simple reason that time series applications were the first application for which BayesFluxR and BayesFlux were implemented. 
 
 ```{r}
 n <- 600
 y <- arima.sim(list(ar = 0.5), n = 600)
 y.train <- y[1:floor(5/6*n)]
 y.test <- y[(floor(5/6*n)+1):n]
-x.test <- matrix(y.test[1:(length(y.test)-1)], nrow = 1) # In BFlux, rows are variables, columns are observations
+x.test <- matrix(y.test[1:(length(y.test)-1)], nrow = 1) # In BayesFlux, rows are variables, columns are observations
 x.train <- matrix(y.train[1:(length(y.train)-1)], nrow = 1)
 y.test <- y.test[2:length(y.test)]
 y.train <- y.train[2:length(y.train)]
@@ -149,7 +149,7 @@ legend(x = 0, y = 3, c("y", "yhat"), col = c(1, 2), lty = c(1, 1))
 
 ## Variational Inference
 
-The next step up from a MAP estimate is a Variational Inference estimate. BayesFluxR currently implements Bayes by Backprop (BBB) [@welling] using a Multivariate Gaussian with diagonal covariance matrix as proposal family. Although BBB is the standard in Bayesian NN, it can at time be restrictive. For that reason, BFlux allows for extensions in the Julia version, not currently though in the R version. 
+The next step up from a MAP estimate is a Variational Inference estimate. BayesFluxR currently implements Bayes by Backprop (BBB) [@welling] using a Multivariate Gaussian with diagonal covariance matrix as proposal family. Although BBB is the standard in Bayesian NN, it can at time be restrictive. For that reason, BayesFlux allows for extensions in the Julia version, not currently though in the R version. 
 
 ```{r}
 # using a batchsize of 10 and running for 1000 epochs

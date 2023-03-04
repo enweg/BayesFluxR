@@ -6,6 +6,6 @@
 \alias{BayesFluxR-package}
 \title{BayesFluxR: Implementation of Bayesian Neural Networks}
 \description{
-BayesFluxR implements BFlux.jl for R; It extends the famous Flux.jl machine learning library to Bayesian Neural Networks. The goal is not to have the fastest production ready library, but rather to allow more people to be able to use and research on Bayesian Neural Networks.
+BayesFluxR implements BayesFlux.jl for R; It extends the famous Flux.jl machine learning library to Bayesian Neural Networks. The goal is not to have the fastest production ready library, but rather to allow more people to be able to use and research on Bayesian Neural Networks.
 }
 \keyword{internal}
