@@ -25,7 +25,7 @@ sampler.SGNHTS(
 has no theoretical backing}
 }
 \value{
-a list with `juliava`, `juliacode` and all arguments provided
+a list with `juliavar`, `juliacode` and all arguments provided
 }
 \description{
 Proposed in Leimkuhler, B., & Shang, X. (2016). Adaptive thermostats for noisy

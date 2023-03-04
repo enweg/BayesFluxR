@@ -2,7 +2,7 @@
 % Please edit documentation in R/distributions.R
 \name{InverseGamma}
 \alias{InverseGamma}
-\title{Create an InverGamma Prior}
+\title{Create an Inverse-Gamma Prior}
 \usage{
 InverseGamma(shape = 2, scale = 2)
 }

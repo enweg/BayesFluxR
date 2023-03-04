@@ -30,7 +30,7 @@
 >   1.  Install Julia manually by following the official instructions.
 >       Link this manual installation to BayesFluxR by calling
 >       `BayesFluxR_setup(JULIA_HOME="path-to-julia-binary", env_path="path-to-some-writable-folder", pkg_check=TRUE)`
->   2.  Make usre that the environment path you are choosing is
+>   2.  Make sure that the environment path you are choosing is
 >       writable. On some systems Julia is not allowed to write to some
 >       locations. A safe choice is usually to choose a folder on the
 >       Desktop. Note that in the example below I am using the temporary
@@ -72,7 +72,7 @@ We are now ready to start exploring BayesFluxR. We first need to load
 the package and run the setup. This will install Julia if you do not yet
 have it and will install all the Julia dependencies, including
 BayesFlux.jl. If you already do have Julia installed, then the script
-will pick the Julia verion on your computer. If you, like me, have
+will pick the Julia version on your computer. If you, like me, have
 multiple versions installed, then you can define the version you want to
 use by setting the `JULIA_HOME` variable to the path of the Julia
 version you want to use.
@@ -106,14 +106,14 @@ defined as a chain of layers. This is intuitively represented in the
 syntax below, which creates a Feedforward Neural Network with one hidden
 layer with `tanh` activation function. The last `Dense(1, 1)` statement
 is the output connection. The chain below thus says: Feed a vector $x$
-into the network. Tranform this input via $act=tanh(x'w_1 + b_1)$. The
+into the network. Transform this input via $act=tanh(x'w_1 + b_1)$. The
 output is then given by $\hat{y} = act'w_2 + b_2$.
 
 ``` r
 net <- Chain(Dense(1, 1, "tanh"), Dense(1, 1))
 ```
 
-To transform this standard Neural Network into a Baysian NN, we need a
+To transform this standard Neural Network into a Bayesian NN, we need a
 likelihood and priors for all parameters. BayesFluxR view on priors and
 likelihoods might be a bit unintuitive at the beginning: a prior
 function only defines priors for the network parameters. Priors for all
@@ -193,7 +193,7 @@ opt <- opt.ADAM()
 mode <- find_mode(bnn, opt, 10, 1000)
 ```
 
-We can use this mode estimat to draw from the posterior predictive.
+We can use this mode estimate to draw from the posterior predictive.
 Given that the mode is just a single value of the posterior, we will
 replicate the mode estimate multiple times. This will still only
 correspond to the one point in the posterior distribution, but will
@@ -466,7 +466,7 @@ sampler <- sampler.SGNHTS(0.01)
 chain.mcmc <- mcmc(bnn, 10, 10000, sampler)
 ```
 
-Ans obtain the posterior preditive draws for the test data and compare
+And obtain the posterior predictive draws for the test data and compare
 it to the actual values:
 
 ``` r

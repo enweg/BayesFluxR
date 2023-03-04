@@ -18,5 +18,5 @@ Truncated(dist, lower, upper)
 see \code{\link{Gamma}}
 }
 \description{
-Truncates a Julia Disribution between `lower` and `upper`.
+Truncates a Julia Distribution between `lower` and `upper`.
 }

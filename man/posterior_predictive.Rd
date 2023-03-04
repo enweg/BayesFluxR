@@ -13,7 +13,7 @@ posterior_predictive(bnn, posterior_samples, x = NULL)
 samples. This can be obtained using \code{\link{mcmc}}, or \code{\link{bayes_by_backprop}}
 or \code{\link{find_mode}}.}
 
-\item{x}{input variables. If `NULL` (default), traning values will be used.}
+\item{x}{input variables. If `NULL` (default), training values will be used.}
 }
 \value{
 A matrix whose columns are the posterior predictive draws.
