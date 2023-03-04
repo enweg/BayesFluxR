@@ -58,7 +58,8 @@ BayesFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, env_pa
   sym.env <- get_random_symbol()
   JuliaCall::julia_assign(sym.env, env_path)
   JuliaCall::julia_command(sprintf("Pkg.activate(%s)", sym.env))
-  pkgs_needed <- list("https://github.com/enweg/BayesFlux.jl.git", "Flux", "Distributions", "Random")
+  # pkgs_needed <- list("https://github.com/enweg/BayesFlux.jl.git", "Flux", "Distributions", "Random")
+  pkgs_needed <- list("https://github.com/enweg/BayesFlux.jl.git#be835ba", "Flux", "Distributions", "Random")
   if (pkg_check){
     do.call(.install_pkg, pkgs_needed)
   }
