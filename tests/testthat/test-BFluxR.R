@@ -1,6 +1,6 @@
 
 testthat::test_that("Check Initialisation", {
-  BFluxR_setup(env_path = "/tmp/", nthreads = 3)
+  BayesFluxR_setup(env_path = "/tmp/", nthreads = 3)
   expect_s3_class(JuliaCall::julia_eval("BFlux"), "JuliaObject")
   expect_s3_class(JuliaCall::julia_eval("Flux"), "JuliaObject")
   expect_s3_class(JuliaCall::julia_eval("Distributions"), "JuliaObject")
@@ -9,7 +9,7 @@ testthat::test_that("Check Initialisation", {
 })
 
 testthat::test_that("Setting seed in R and Julia", {
-  BFluxR_setup(env_path = "/tmp/", nthreads = 3)
+  BayesFluxR_setup(env_path = "/tmp/", nthreads = 3)
 
   .set_seed(6150533)
   rand_R = runif(1)
@@ -23,7 +23,7 @@ testthat::test_that("Setting seed in R and Julia", {
 })
 
 testthat::test_that("Network Chains", {
-  BFluxR_setup(env_path = "/tmp/", nthreads = 3)
+  BayesFluxR_setup(env_path = "/tmp/", nthreads = 3)
 
   ch = Chain(Dense(1, 1))
   expect_equal(ch$specification, "Chain(Dense(1, 1, identity))")
@@ -46,7 +46,7 @@ testthat::test_that("Network Chains", {
 
 
 testthat::test_that("Create BNN", {
-  BFluxR_setup(env_path = "/tmp/", nthreads = 3)
+  BayesFluxR_setup(env_path = "/tmp/", nthreads = 3)
   x <- matrix(rnorm(100), nrow = 1)
   y <- rnorm(100)
   ch <- Chain(Dense(1, 1))

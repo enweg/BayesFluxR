@@ -1,45 +1,45 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# BFluxR
+# BayesFluxR
 
 <!-- badges: start -->
 
-[![test-coverage](https://github.com/enweg/BFluxR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/test-coverage.yaml)
-[![R-CMD-check](https://github.com/enweg/BFluxR/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/enweg/BFluxR/actions/workflows/check-standard.yaml)
+[![test-coverage](https://github.com/enweg/BayesFluxR/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/enweg/BayesFluxR/actions/workflows/test-coverage.yaml)
+[![R-CMD-check](https://github.com/enweg/BayesFluxR/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/enweg/BayesFluxR/actions/workflows/check-standard.yaml)
 <!-- badges: end -->
 
 > :warning: **Known Issues**
 >
-> - The first call of `BFluxR_setup` can take a while. On some machines
+> - The first call of `BayesFluxR_setup` can take a while. On some machines
 >   this could take twenty minutes or longer. This is most likely due to
 >   that Julia first needs to be set up. If you want to check whether
 >   everything is still going well, you can always check in the task
 >   manager if the Julia background process is still busy. As long as
 >   this is the case, everything is going right.
 >
-> - Please always call `library(BFlux)` before calling `BFluxR_setup`.
->   Calling `BFluxR::BFluxR_setup` throws an error that I do not know
+> - Please always call `library(BFlux)` before calling `BayesFluxR_setup`.
+>   Calling `BayesFluxR::BayesFluxR_setup` throws an error that I do not know
 >   how to solve at this point (feel free to open a pull request)
 >
 > - Some systems, especially on company computers, cause failures in the
->   automatic setup of BFluxR. In these cases, please try the following
+>   automatic setup of BayesFluxR. In these cases, please try the following
 >
 >   1.  Install Julia manually by following the official instructions.
->       Link this manual installation to BFluxR by calling
->       `BFluxR_setup(JULIA_HOME="path-to-julia-binary", env_path="path-to-some-writable-folder", pkg_check=TRUE)`
+>       Link this manual installation to BayesFluxR by calling
+>       `BayesFluxR_setup(JULIA_HOME="path-to-julia-binary", env_path="path-to-some-writable-folder", pkg_check=TRUE)`
 >   2.  Make usre that the environment path you are choosing is
 >       writable. On some systems Julia is not allowed to write to some
 >       locations. A safe choice is usually to choose a folder on the
 >       Desktop. Note that in the example below I am using the temporary
 >       folder on a Mac. This will often not work on company computers.
->   3.  If the above still do not work, try to force reinstall BFluxR
+>   3.  If the above still do not work, try to force reinstall BayesFluxR
 >       and try the steps again. If it still does not work, please open
 >       an issue.
 
 **Goals and Introduction**
 
-BFluxR is a R interface to BFlux.jl which itself extends the famous
+BayesFluxR is a R interface to BFlux.jl which itself extends the famous
 Flux.jl machine learning library in Julia. BFlux is meant to make
 research and testing of Bayesian Neural Networks easy. It is not meant
 for production, but rather for explorations. Currently only regression
@@ -52,21 +52,21 @@ possible.
 
 ## Basics
 
-BFluxR and BFlux are based on Flux.jl and thus take over a lot of Flux’s
+BayesFluxR and BFlux are based on Flux.jl and thus take over a lot of Flux’s
 syntax. Before we demonstrate this, we first need to install and load
-BFluxR. Installation is currently only possible from Github:
+BayesFluxR. Installation is currently only possible from Github:
 
 ``` r
-devtools::install_github("enweg/BFluxR")
-#> Skipping install of 'BFluxR' from a github remote, the SHA1 (5c211dd4) has not changed since last install.
+devtools::install_github("enweg/BayesFluxR")
+#> Skipping install of 'BayesFluxR' from a github remote, the SHA1 (5c211dd4) has not changed since last install.
 #>   Use `force = TRUE` to force installation
 ```
 
-BFluxR depends on BFlux.jl which is a library written in Julia. Hence,
-to run BFluxR, we need a way to access Julia. This is provided by the
+BayesFluxR depends on BFlux.jl which is a library written in Julia. Hence,
+to run BayesFluxR, we need a way to access Julia. This is provided by the
 JuliaCall library. So we also need to install that library.
 
-We are now ready to start exploring BFluxR. We first need to load the
+We are now ready to start exploring BayesFluxR. We first need to load the
 package and run the setup. This will install Julia if you do not yet
 have it and will install all the Julia dependencies, including BFlux.jl.
 If you already do have Julia installed, then the script will pick the
@@ -87,17 +87,17 @@ R and in Julia. If you wish to set a seed later on, please use
 `.set_seed` which sets the seed in both Julia and R.
 
 ``` r
-library(BFluxR);
+library(BayesFluxR);
 # The line below sets up everything automatically, but sometimes fails
-# BFluxR_setup(seed = 6150533, env_path = "/tmp", pkg_check = TRUE)
+# BayesFluxR_setup(seed = 6150533, env_path = "/tmp", pkg_check = TRUE)
 # If the automatic setup failed or you wish to use a specific verions of Julia, 
 # then use the JULIA_HOME argument. The path below is for a Mac. 
-BFluxR_setup(JULIA_HOME="/Applications/Julia-1.8.app/Contents/Resources/julia/bin/", 
+BayesFluxR_setup(JULIA_HOME="/Applications/Julia-1.8.app/Contents/Resources/julia/bin/", 
              seed = 6150533, 
              env_path = "/tmp");
 ```
 
-After loading BFluxR and running the setup, we are now ready to
+After loading BayesFluxR and running the setup, we are now ready to
 experiment around. To create a Bayesian Neural Network, we first need a
 Neural Network. In the Flux.jl context and thus also here, a network is
 defined as a chain of layers. This is intuitively represented in the
@@ -112,7 +112,7 @@ net <- Chain(Dense(1, 1, "tanh"), Dense(1, 1))
 ```
 
 To transform this standard Neural Network into a Baysian NN, we need a
-likelihood and priors for all parameters. BFluxR view on priors and
+likelihood and priors for all parameters. BayesFluxR view on priors and
 likelihoods might be a bit unintuitive at the beginning: a prior
 function only defines priors for the network parameters. Priors for all
 parameters introduced by the likelihood, such as the standard deviation,
@@ -133,8 +133,8 @@ Gamma prior for the standard deviation.
 like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
 ```
 
-For all of the estimation methods in BFluxR, we need some initial
-values. BFluxR handles this via initialisers, which essentially just
+For all of the estimation methods in BayesFluxR, we need some initial
+values. BayesFluxR handles this via initialisers, which essentially just
 tell it how to initialise all parameters. Currently only one kind of
 initialiser is implemented: Initialising all parameters (network and
 likelihood) by drawing randomly from a distribution. Users are free to
@@ -149,7 +149,7 @@ init <- initialise.allsame(Normal(0, 0.5), like, prior)
 Now that we have priors on all parameters as well as a likelihood, all
 that is left is to have some data. Here we will take an AR(1) for the
 simple reason that time series applications were the first application
-for which BFluxR and BFlux were implemented.
+for which BayesFluxR and BFlux were implemented.
 
 ``` r
 n <- 600
@@ -181,7 +181,7 @@ bnn <- BNN(x.train, y.train, like, prior, init)
 ## Mode and Modal Approximations
 
 The easiest way to test a BNN and to obtain a first estimate is by using
-the MAP or the mode of the posterior distribution. BFluxR achieves this
+the MAP or the mode of the posterior distribution. BayesFluxR achieves this
 by using stochastic gradient descent type of algorithms. Currently
 implemented are `opt.ADAM`, `opt.RMSProp`, and `opt.Descent`.
 
@@ -228,7 +228,7 @@ legend(x = 0, y = 3, c("y", "yhat"), col = c(1, 2), lty = c(1, 1))
 ## Variational Inference
 
 The next step up from a MAP estimate is a Variational Inference
-estimate. BFluxR currently implements Bayes by Backprop (BBB)
+estimate. BayesFluxR currently implements Bayes by Backprop (BBB)
 (**welling?**) using a Multivariate Gaussian with diagonal covariance
 matrix as proposal family. Although BBB is the standard in Bayesian NN,
 it can at time be restrictive. For that reason, BFlux allows for
@@ -278,7 +278,7 @@ data.frame(
 
 ## MCMC Methods
 
-BFluxR implements various Markov Chain Monte Carlo methods that can be
+BayesFluxR implements various Markov Chain Monte Carlo methods that can be
 use to obtain approximate draws from the posterior. Currently
 implemented are
 
@@ -288,7 +288,7 @@ implemented are
 - Hamiltonian Monte Carlo (HMC): `sampler.HMC`
 - Adaptive Metropolis Hastings (AdaptiveMH): `sampler.AdaptiveMH`
 
-Additionally, BFluxR allows for adaptation of mass matrices and
+Additionally, BayesFluxR allows for adaptation of mass matrices and
 stepsizes for some of the samplers above:
 
 - Mass adaptation via `madapter.DiagCov`, `madapter.FullCov`,
@@ -390,7 +390,7 @@ list(
 
 ## Recurrent Structures
 
-Next to Dense layers, BFluxR currently supports the use of RNN and LSTM
+Next to Dense layers, BayesFluxR currently supports the use of RNN and LSTM
 layers. Currently only seq-to-one tasks are supported (only those
 likelihoods are implemented) and extension possibilities do currently
 only exist in the Julia version, but the plan is to update this soon.
@@ -401,7 +401,7 @@ of these subsequences to predict the value that would come in $y$ after
 the subsequence ends. This way we can train an RNN or LSTM network with
 a single time series.
 
-To support the above, BFluxR comes with a utility function
+To support the above, BayesFluxR comes with a utility function
 `tensor_embed_mat` which takes a matrix of time series and embeds it
 into a tensor consisting of dimensions
 $seqlen \times numvariables \times numsubsequences$.
@@ -440,7 +440,7 @@ init <- initialise.allsame(Normal(0, 0.5), like, prior)
 bnn <- BNN(x.train, y.train, like, prior, init)
 ```
 
-One thing not discussed above is that BFluxR also allows to draw from
+One thing not discussed above is that BayesFluxR also allows to draw from
 the prior_predictive distribution. This often shows that the priors
 currently used in standard work are often not the best and much work
 could be done here.

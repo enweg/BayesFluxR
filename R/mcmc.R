@@ -16,7 +16,7 @@
 sampler.SGLD <- function(stepsize_a = 0.1, stepsize_b = 0,
                          stepsize_gamma = 0.55, min_stepsize = -Inf){
 
-  JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BFluxR"))
+  JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BayesFluxR"))
 
   juliavar <- get_random_symbol()
   juliacode <- sprintf("ascii_SGLD(; stepsize_a = %ff0, stepsize_b = %ff0, stepsize_gamma = %ff0, min_stepsize = Float32(%s))",
@@ -81,7 +81,7 @@ sampler.GGMC <- function(beta = 0.1, l = 1.0,
                          madapter = madapter.FixedMassMatrix(),
                          steps = 3){
 
-  JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BFluxR"))
+  JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BayesFluxR"))
 
   juliavar <- get_random_symbol()
   juliacode <- sprintf("ascii_GGMC(; beta = %ff0, l = %ff0, sadapter = %s, madapter = %s, steps = %i)",
@@ -158,7 +158,7 @@ sampler.HMC <- function(l, path_len,
 sampler.SGNHTS <- function(l, sigmaA = 1, xi = 1, mu = 1,
                            madapter = madapter.FixedMassMatrix()){
 
-  JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BFluxR"))
+  JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BayesFluxR"))
 
   juliavar <- get_random_symbol()
   juliacode <- sprintf("ascii_SGNHTS(%ff0, %ff0; xi = %ff0, mu = %ff0, madapter = %s)",

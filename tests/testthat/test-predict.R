@@ -1,7 +1,7 @@
 
 
 testthat::test_that("Predictive Feedforward", {
-  BFluxR_setup(env_path = "/tmp/", nthreads = 3, pkg_check = FALSE)
+  BayesFluxR_setup(env_path = "/tmp/", nthreads = 3, pkg_check = FALSE)
 
   y <- rnorm(100)
   x <- matrix(rnorm(100), nrow = 1)
@@ -23,7 +23,7 @@ testthat::test_that("Predictive Feedforward", {
 
 
 testthat::test_that("Predictive Seq-to-One", {
-  BFluxR_setup(env_path = "/tmp/", nthreads = 3, pkg_check = FALSE)
+  BayesFluxR_setup(env_path = "/tmp/", nthreads = 3, pkg_check = FALSE)
 
   y <- rnorm(500)
   tensor <- tensor_embed_mat(matrix(y, ncol = 1), len_seq = 10+1)

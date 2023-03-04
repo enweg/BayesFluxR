@@ -50,7 +50,7 @@
 #' @param ... Other parameters passed on to \code{\link[JuliaCall]{julia_setup}}
 #'
 #' @export
-BFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, env_path = getwd(), ...){
+BayesFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, env_path = getwd(), ...){
 
   Sys.setenv(JULIA_NUM_THREADS = sprintf("%i", nthreads))
   julia <- JuliaCall::julia_setup(installJulia = TRUE, ...)

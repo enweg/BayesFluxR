@@ -1,6 +1,6 @@
 
 testthat::test_that("MCMC Sampling", {
-  BFluxR_setup(env_path = "/tmp/", nthreads = 3, pkg_check = FALSE)
+  BayesFluxR_setup(env_path = "/tmp/", nthreads = 3, pkg_check = FALSE)
 
   y <- rnorm(100)
   x <- matrix(rnorm(100), nrow = 1)

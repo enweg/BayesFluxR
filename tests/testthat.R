@@ -1,4 +1,4 @@
 library(testthat)
-library(BFluxR)
+library(BayesFluxR)
 
-test_check("BFluxR")
+test_check("BayesFluxR")

@@ -1,6 +1,6 @@
 
 testthat::test_that("Gaussian Prior", {
-  BFluxR_setup(env_path = "/tmp/", nthreads = 3, pkg_check = FALSE)
+  BayesFluxR_setup(env_path = "/tmp/", nthreads = 3, pkg_check = FALSE)
 
   ch = Chain(Dense(1, 1))
   gp = prior.gaussian(ch, 3.0)
@@ -9,7 +9,7 @@ testthat::test_that("Gaussian Prior", {
 })
 
 testthat::test_that("MixtureScale Prior", {
-  BFluxR_setup(env_path = "/tmp/", nthreads = 3, pkg_check = FALSE)
+  BayesFluxR_setup(env_path = "/tmp/", nthreads = 3, pkg_check = FALSE)
 
   ch = Chain(Dense(1, 1))
   gp = prior.mixturescale(ch, 1.0, 0.1, 0.9)

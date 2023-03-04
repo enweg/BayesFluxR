@@ -9,7 +9,7 @@
 #' @export
 prior_predictive <- function(bnn, n = 1){
   if (!JuliaCall::julia_exists("prior_predict_feedforward")){
-    JuliaCall::julia_source(system.file("Julia/helpers-prior-predictive.jl", package = "BFluxR"))
+    JuliaCall::julia_source(system.file("Julia/helpers-prior-predictive.jl", package = "BayesFluxR"))
   }
 
   if (ndims(bnn$x) == 2){

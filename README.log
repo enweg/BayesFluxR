@@ -433,7 +433,7 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 
 Package hyperref Info: Link coloring OFF on input line 107.
 
-LaTeX Warning: File `https://github.com/enweg/BFluxR/actions/workflows/test-coverage.yaml/badge.svg' not found on input line 112.
+LaTeX Warning: File `https://github.com/enweg/BayesFluxR/actions/workflows/test-coverage.yaml/badge.svg' not found on input line 112.
 
 
 ! LaTeX Error: Unknown graphics extension: .svg.

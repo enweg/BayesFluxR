@@ -97,7 +97,7 @@ madapter.FullCov <- function(adapt_steps, windowlength,
 #' @export
 madapter.RMSProp <- function(adapt_steps, lambda = 1e-5, alpha = 0.99){
 
-  JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BFluxR"))
+  JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BayesFluxR"))
 
   juliavar <- get_random_symbol()
   juliacode <- sprintf("ascii_RMSPropMassAdapter(%i; lambda = %ff0, alpha = %ff0)",
