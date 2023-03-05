@@ -289,8 +289,8 @@ implemented are
   `sampler.SGLD`
 - Stochastic Gradient Nose-Hoover Thermostat (SGNHTS) (Leimkuhler and
   Shang 2016): `sampler.SGNHTS`
-- Gradient Guided Monte Carlo (GGMC) \[@
-  garrigaalonsoExactLangevinDynamics2021\]: `sampler.GGMC`
+- Gradient Guided Monte Carlo (GGMC) (Garriga-Alonso and Fortuin 2021):
+  `sampler.GGMC`
 - Hamiltonian Monte Carlo (HMC): `sampler.HMC`
 - Adaptive Metropolis Hastings (AdaptiveMH) (Haario, Saksman, and
   Tamminen 2001): `sampler.AdaptiveMH`
@@ -491,6 +491,14 @@ legend("topleft", c("Data", "Prediction"), col = c("black", "red"), lty = c(1, 1
 
 Blundell, Charles, Julien Cornebise, Koray Kavukcuoglu, and Daan
 Wierstra. 2015. “Weight Uncertainty in Neural Networks,” 10.
+
+</div>
+
+<div id="ref-garrigaalonsoExactLangevinDynamics2021" class="csl-entry">
+
+Garriga-Alonso, Adrià, and Vincent Fortuin. 2021. “Exact Langevin
+Dynamics with Stochastic Gradients.” February 2, 2021.
+<http://arxiv.org/abs/2102.01691>.
 
 </div>
 
