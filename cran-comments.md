@@ -4,16 +4,16 @@
 
 There were no ERRORs and no WARNINGs
 
-There was 1 Notes:
+There was 0 Notes:
 
-* checking CRAN incoming feasibility ... [6s/18s] NOTE
-  Maintainer: ‘Enrico Wegner <e.wegner@student.maastrichtuniversity.nl>’
+## Previous CRAN maintainer comments: 
 
-  New submission
+> Thanks, but please single quote software names in the Description field, 
+e.g. 'BayesFlux.jl'.
+> Please fix and resubmit.
+> Is there some reference about the method you can add in the Description 
+field in the form Authors (year) <doi:10.....> or <arXiv:.....>?
+> Best,
+> Uwe Ligges
 
-  Possibly misspelled words in DESCRIPTION:
-    BayesFlux (7:32)
-    jl (7:42, 8:19) 
-    
-  Comment: This is just the package name. 'jl' comes from BayesFlux.jl which is usually how Julia packages are written. 
-  
+Reply: All software names have now been single quoted in the Description field. References to the relevant literature exist in the README and in the documentation to the Julia functions. 
