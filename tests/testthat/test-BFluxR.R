@@ -1,5 +1,8 @@
 
 testthat::test_that("Check Initialisation", {
+  # We will follow other packages such as diffeqr and skip
+  # Julia related tests on CRAN
+  testthat::skip_on_cran()
   BayesFluxR_setup(env_path = ".", nthreads = 3)
   expect_s3_class(JuliaCall::julia_eval("BayesFlux"), "JuliaObject")
   expect_s3_class(JuliaCall::julia_eval("Flux"), "JuliaObject")
@@ -12,6 +15,9 @@ testthat::test_that("Check Initialisation", {
 })
 
 testthat::test_that("Setting seed in R and Julia", {
+  # We will follow other packages such as diffeqr and skip
+  # Julia related tests on CRAN
+  testthat::skip_on_cran()
   BayesFluxR_setup(env_path = ".", nthreads = 3)
 
   .set_seed(6150533)
@@ -26,6 +32,9 @@ testthat::test_that("Setting seed in R and Julia", {
 })
 
 testthat::test_that("Network Chains", {
+  # We will follow other packages such as diffeqr and skip
+  # Julia related tests on CRAN
+  testthat::skip_on_cran()
   BayesFluxR_setup(env_path = ".", nthreads = 3)
 
   ch = Chain(Dense(1, 1))
@@ -49,6 +58,9 @@ testthat::test_that("Network Chains", {
 
 
 testthat::test_that("Create BNN", {
+  # We will follow other packages such as diffeqr and skip
+  # Julia related tests on CRAN
+  testthat::skip_on_cran()
   BayesFluxR_setup(env_path = ".", nthreads = 3)
   x <- matrix(rnorm(100), nrow = 1)
   y <- rnorm(100)

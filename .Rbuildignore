@@ -4,3 +4,5 @@
 ^README\.Rmd$
 ^\.github$
 ^CRAN-SUBMISSION$
+^bibliography.bib
+^cran-comments.md

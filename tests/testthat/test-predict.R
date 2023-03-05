@@ -1,6 +1,9 @@
 
 
 testthat::test_that("Predictive Feedforward", {
+  # We will follow other packages such as diffeqr and skip
+  # Julia related tests on CRAN
+  testthat::skip_on_cran()
   BayesFluxR_setup(env_path = ".", nthreads = 3, pkg_check = FALSE)
 
   y <- rnorm(100)
@@ -23,6 +26,9 @@ testthat::test_that("Predictive Feedforward", {
 
 
 testthat::test_that("Predictive Seq-to-One", {
+  # We will follow other packages such as diffeqr and skip
+  # Julia related tests on CRAN
+  testthat::skip_on_cran()
   BayesFluxR_setup(env_path = ".", nthreads = 3, pkg_check = FALSE)
 
   y <- rnorm(500)

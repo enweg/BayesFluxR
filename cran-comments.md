@@ -4,7 +4,7 @@
 
 There were no ERRORs and no WARNINGs
 
-There were 2 Notes:
+There was 1 Notes:
 
 * checking CRAN incoming feasibility ... [6s/18s] NOTE
   Maintainer: ‘Enrico Wegner <e.wegner@student.maastrichtuniversity.nl>’
@@ -17,8 +17,3 @@ There were 2 Notes:
     
   Comment: This is just the package name. 'jl' comes from BayesFlux.jl which is usually how Julia packages are written. 
   
-* checking top-level files ... NOTE
-  Non-standard file/directory found at top level:
-    ‘bibliography.bib’
-    
-  Comment: This is just the bibliography file for the README. 
