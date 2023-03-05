@@ -231,10 +231,11 @@ legend(x = 0, y = 3, c("y", "yhat"), col = c(1, 2), lty = c(1, 1))
 
 The next step up from a MAP estimate is a Variational Inference
 estimate. BayesFluxR currently implements Bayes by Backprop (BBB)
-(**welling?**) using a Multivariate Gaussian with diagonal covariance
-matrix as proposal family. Although BBB is the standard in Bayesian NN,
-it can at time be restrictive. For that reason, BayesFlux allows for
-extensions in the Julia version, not currently though in the R version.
+(Blundell et al. 2015) using a Multivariate Gaussian with diagonal
+covariance matrix as proposal family. Although BBB is the standard in
+Bayesian NN, it can at time be restrictive. For that reason, BayesFlux
+allows for extensions in the Julia version, not currently though in the
+R version.
 
 ``` r
 # using a batchsize of 10 and running for 1000 epochs
@@ -284,11 +285,15 @@ BayesFluxR implements various Markov Chain Monte Carlo methods that can
 be use to obtain approximate draws from the posterior. Currently
 implemented are
 
-- Stochastic Gradient Langevin Dynamics (SGLD): `sampler.SGLD`
-- Stochastic Gradient Nose-Hoover Thermostat (SGNHTS): `sampler.SGNHTS`
-- Gradient Guided Monte Carlo (GGMC): `sampler.GGMC`
+- Stochastic Gradient Langevin Dynamics (SGLD) (Welling and Teh 2011):
+  `sampler.SGLD`
+- Stochastic Gradient Nose-Hoover Thermostat (SGNHTS) (Leimkuhler and
+  Shang 2016): `sampler.SGNHTS`
+- Gradient Guided Monte Carlo (GGMC)
+  (**alonsoExactLangevinDynamics2021?**): `sampler.GGMC`
 - Hamiltonian Monte Carlo (HMC): `sampler.HMC`
-- Adaptive Metropolis Hastings (AdaptiveMH): `sampler.AdaptiveMH`
+- Adaptive Metropolis Hastings (AdaptiveMH) (Haario, Saksman, and
+  Tamminen 2001): `sampler.AdaptiveMH`
 
 Additionally, BayesFluxR allows for adaptation of mass matrices and
 stepsizes for some of the samplers above:
@@ -479,3 +484,37 @@ legend("topleft", c("Data", "Prediction"), col = c("black", "red"), lty = c(1, 1
 ```
 
 <img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
+
+<div id="refs" class="references csl-bib-body hanging-indent">
+
+<div id="ref-blundellWeightUncertaintyNeural2015" class="csl-entry">
+
+Blundell, Charles, Julien Cornebise, Koray Kavukcuoglu, and Daan
+Wierstra. 2015. “Weight Uncertainty in Neural Networks,” 10.
+
+</div>
+
+<div id="ref-haarioAdaptiveMetropolisAlgorithm2001" class="csl-entry">
+
+Haario, Heikki, Eero Saksman, and Johanna Tamminen. 2001. “An Adaptive
+Metropolis Algorithm.” *Bernoulli* 7 (2): 223.
+<https://doi.org/10.2307/3318737>.
+
+</div>
+
+<div id="ref-leimkuhlerAdaptiveThermostatsNoisy2016" class="csl-entry">
+
+Leimkuhler, Benedict, and Xiaocheng Shang. 2016. “Adaptive Thermostats
+for Noisy Gradient Systems.” *SIAM Journal on Scientific Computing* 38
+(2): A712–36. <https://doi.org/10.1137/15M102318X>.
+
+</div>
+
+<div id="ref-wellingBayesianLearningStochastic2011" class="csl-entry">
+
+Welling, Max, and Yee Whye Teh. 2011. “Bayesian Learning via Stochastic
+Gradient Langevin Dynamics,” 8.
+
+</div>
+
+</div>
