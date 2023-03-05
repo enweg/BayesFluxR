@@ -193,7 +193,8 @@ BayesFluxR implements various Markov Chain Monte Carlo methods that can be use t
 
 - Stochastic Gradient Langevin Dynamics (SGLD) [@wellingBayesianLearningStochastic2011]: `sampler.SGLD`
 - Stochastic Gradient Nose-Hoover Thermostat (SGNHTS) [@leimkuhlerAdaptiveThermostatsNoisy2016]: `sampler.SGNHTS`
-- Gradient Guided Monte Carlo (GGMC) [@alonsoExactLangevinDynamics2021]: `sampler.GGMC`
+- Gradient Guided Monte Carlo (GGMC) [@
+garrigaalonsoExactLangevinDynamics2021]: `sampler.GGMC`
 - Hamiltonian Monte Carlo (HMC): `sampler.HMC`
 - Adaptive Metropolis Hastings (AdaptiveMH) [@haarioAdaptiveMetropolisAlgorithm2001]: `sampler.AdaptiveMH`
 

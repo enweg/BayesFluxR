@@ -289,8 +289,8 @@ implemented are
   `sampler.SGLD`
 - Stochastic Gradient Nose-Hoover Thermostat (SGNHTS) (Leimkuhler and
   Shang 2016): `sampler.SGNHTS`
-- Gradient Guided Monte Carlo (GGMC)
-  (**alonsoExactLangevinDynamics2021?**): `sampler.GGMC`
+- Gradient Guided Monte Carlo (GGMC) \[@
+  garrigaalonsoExactLangevinDynamics2021\]: `sampler.GGMC`
 - Hamiltonian Monte Carlo (HMC): `sampler.HMC`
 - Adaptive Metropolis Hastings (AdaptiveMH) (Haario, Saksman, and
   Tamminen 2001): `sampler.AdaptiveMH`
