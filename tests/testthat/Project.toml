@@ -1,0 +1,5 @@
+[deps]
+BayesFlux = "c2416e8a-86ea-414a-9a91-c37c770c1547"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
