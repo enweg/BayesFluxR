@@ -91,7 +91,7 @@ R and in Julia. If you wish to set a seed later on, please use
 ``` r
 library(BayesFluxR);
 # The line below sets up everything automatically, but sometimes fails
-# BayesFluxR_setup(seed = 6150533, env_path = "/tmp", pkg_check = TRUE)
+# BayesFluxR_setup(installJulia = TRUE, seed = 6150533, env_path = "/tmp", pkg_check = TRUE)
 # If the automatic setup failed or you wish to use a specific verions of Julia, 
 # then use the JULIA_HOME argument. The path below is for a Mac. 
 BayesFluxR_setup(JULIA_HOME="/Applications/Julia-1.8.app/Contents/Resources/julia/bin/", 
@@ -498,7 +498,7 @@ Wierstra. 2015. “Weight Uncertainty in Neural Networks,” 10.
 
 Garriga-Alonso, Adrià, and Vincent Fortuin. 2021. “Exact Langevin
 Dynamics with Stochastic Gradients.” February 2, 2021.
-<http://arxiv.org/abs/2102.01691>.
+<https://arxiv.org/abs/2102.01691/>.
 
 </div>
 

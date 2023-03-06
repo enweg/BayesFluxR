@@ -3,7 +3,8 @@ testthat::test_that("Gaussian Prior", {
   # We will follow other packages such as diffeqr and skip
   # Julia related tests on CRAN
   testthat::skip_on_cran()
-  BayesFluxR_setup(env_path = ".", nthreads = 3, pkg_check = FALSE)
+  # BayesFluxR_setup(installJulia = FALSE, env_path = ".", nthreads = 3, pkg_check = FALSE)
+  test_setup(nthreads = 3, pkg_check = FALSE)
 
   ch = Chain(Dense(1, 1))
   gp = prior.gaussian(ch, 3.0)
@@ -15,7 +16,8 @@ testthat::test_that("MixtureScale Prior", {
   # We will follow other packages such as diffeqr and skip
   # Julia related tests on CRAN
   testthat::skip_on_cran()
-  BayesFluxR_setup(env_path = ".", nthreads = 3, pkg_check = FALSE)
+  # BayesFluxR_setup(installJulia = FALSE, env_path = ".", nthreads = 3, pkg_check = FALSE)
+  test_setup(nthreads = 3, pkg_check = FALSE)
 
   ch = Chain(Dense(1, 1))
   gp = prior.mixturescale(ch, 1.0, 0.1, 0.9)

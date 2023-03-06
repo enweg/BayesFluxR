@@ -3,7 +3,8 @@ testthat::test_that("MCMC Sampling", {
   # We will follow other packages such as diffeqr and skip
   # Julia related tests on CRAN
   testthat::skip_on_cran()
-  BayesFluxR_setup(env_path = ".", nthreads = 3, pkg_check = FALSE)
+  # BayesFluxR_setup(installJulia = FALSE, env_path = ".", nthreads = 3, pkg_check = FALSE)
+  test_setup(nthreads = 3, pkg_check = FALSE)
 
   y <- rnorm(100)
   x <- matrix(rnorm(100), nrow = 1)

@@ -9,6 +9,7 @@ BayesFluxR_setup(
   nthreads = 4,
   seed = NULL,
   env_path = getwd(),
+  installJulia = TRUE,
   ...
 )
 }
@@ -22,6 +23,8 @@ are installed}
 
 \item{env_path}{The path to were the Julia environment should be created.
 By default, this is the current working directory.}
+
+\item{installJulia}{(Default=TRUE) Whether to install Julia}
 
 \item{...}{Other parameters passed on to \code{\link[JuliaCall]{julia_setup}}}
 }
