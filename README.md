@@ -498,7 +498,7 @@ Wierstra. 2015. “Weight Uncertainty in Neural Networks,” 10.
 
 Garriga-Alonso, Adrià, and Vincent Fortuin. 2021. “Exact Langevin
 Dynamics with Stochastic Gradients.” February 2, 2021.
-<https://arxiv.org/abs/2102.01691/>.
+<https://arxiv.org/abs/2102.01691>.
 
 </div>
 

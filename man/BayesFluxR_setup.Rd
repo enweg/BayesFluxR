@@ -9,7 +9,7 @@ BayesFluxR_setup(
   nthreads = 4,
   seed = NULL,
   env_path = getwd(),
-  installJulia = TRUE,
+  installJulia = FALSE,
   ...
 )
 }
