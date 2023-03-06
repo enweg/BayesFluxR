@@ -38,4 +38,4 @@ Reply: The link has now been fixed.
 > policies. It is not permitted to install thirs party software without 
 > explicit user interaction! Particularly not in examples or test!
 
-Reply: Following other packages such as 'diffeqr', tests involving Julia are skipped on CRAN now. 
+Reply: Following other packages such as 'diffeqr', tests involving Julia are skipped on CRAN now. Unless tests are run in CI (indicated by an environment variable), tests should now always ask the user whether they want to install Julia. The default choice in the setup function has also been set to FALSE. 
