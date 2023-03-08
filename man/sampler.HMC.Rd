@@ -31,3 +31,21 @@ This is motivated by parts of the discussion in
 Neal, R. M. (1996). Bayesian Learning for Neural Networks (Vol. 118). Springer
 New York. https://doi.org/10.1007/978-1-4612-0745-0
 }
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(Dense(5, 1))
+  like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+  prior <- prior.gaussian(net, 0.5)
+  init <- initialise.allsame(Normal(0, 0.5), like, prior)
+  x <- matrix(rnorm(5*100), nrow = 5)
+  y <- rnorm(100)
+  bnn <- BNN(x, y, like, prior, init)
+  sadapter <- sadapter.DualAverage(100)
+  sampler <- sampler.HMC(1e-3, 3, sadapter = sadapter)
+  ch <- mcmc(bnn, 10, 1000, sampler)
+}
+
+}

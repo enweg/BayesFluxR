@@ -19,6 +19,20 @@
 #'     \item juliavar - julia variable containing the likelihood
 #'     \item juliacode - julia code used to create the likelihood
 #' }
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   BNN.totparams(bnn)
+#' }
 #'
 #' @export
 likelihood.feedforward_normal <- function(chain, sig_prior){
@@ -40,6 +54,20 @@ likelihood.feedforward_normal <- function(chain, sig_prior){
 #' @param nu DF of TDist
 #'
 #' @return see \code{\link{likelihood.feedforward_normal}}
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_tdist(net, Gamma(2.0, 0.5), nu=8)
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   BNN.totparams(bnn)
+#' }
 #'
 #' @export
 likelihood.feedforward_tdist <- function(chain, sig_prior, nu=30){
@@ -67,6 +95,20 @@ likelihood.feedforward_tdist <- function(chain, sig_prior, nu=30){
 #'
 #' @inheritParams likelihood.feedforward_normal
 #' @return see \code{\link{likelihood.feedforward_normal}}
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(RNN(5, 1))
+#'   like <- likelihood.seqtoone_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- array(rnorm(5*100*10), dim=c(10,5,100))
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   BNN.totparams(bnn)
+#' }
 #'
 #' @export
 likelihood.seqtoone_normal <- function(chain, sig_prior){
@@ -87,6 +129,20 @@ likelihood.seqtoone_normal <- function(chain, sig_prior){
 #' @inheritParams likelihood.feedforward_tdist
 #'
 #' @return see \code{\link{likelihood.feedforward_normal}}
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(RNN(5, 1))
+#'   like <- likelihood.seqtoone_tdist(net, Gamma(2.0, 0.5), nu=5)
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- array(rnorm(5*100*10), dim=c(10,5,100))
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   BNN.totparams(bnn)
+#' }
 #'
 #' @export
 likelihood.seqtoone_tdist <- function(chain, sig_prior, nu = 30){

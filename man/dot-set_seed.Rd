@@ -9,6 +9,17 @@
 \arguments{
 \item{seed}{seed to be used}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Set a seed both in Julia and R
+}
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  .set_seed(123)
+}
 }

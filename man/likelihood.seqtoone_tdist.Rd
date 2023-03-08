@@ -22,3 +22,19 @@ see \code{\link{likelihood.feedforward_normal}}
 See \code{\link{likelihood.seqtoone_normal}} and \code{\link{likelihood.feedforward_tdist}}
 for details,
 }
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(RNN(5, 1))
+  like <- likelihood.seqtoone_tdist(net, Gamma(2.0, 0.5), nu=5)
+  prior <- prior.gaussian(net, 0.5)
+  init <- initialise.allsame(Normal(0, 0.5), like, prior)
+  x <- array(rnorm(5*100*10), dim=c(10,5,100))
+  y <- rnorm(100)
+  bnn <- BNN(x, y, like, prior, init)
+  BNN.totparams(bnn)
+}
+
+}

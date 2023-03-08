@@ -21,3 +21,13 @@ A list with the following content
 \description{
 Creates a Gamma prior in Julia using Distributions.jl
 }
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(Dense(5, 1))
+  like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+}
+
+}

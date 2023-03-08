@@ -28,8 +28,17 @@ By default, this is the current working directory.}
 
 \item{...}{Other parameters passed on to \code{\link[JuliaCall]{julia_setup}}}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 This will set up a new Julia environment in the current working
 directory or another folder if provided. This environment will
 then be set with all Julia dependencies needed.
+}
+\examples{
+\dontrun{
+  ## Time consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+}
 }

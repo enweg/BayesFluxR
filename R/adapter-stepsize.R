@@ -4,6 +4,22 @@
 #' @param l stepsize
 #'
 #' @return list with `juliavar`, `juliacode` and the given arguments
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   sadapter <- sadapter.Const(1e-5)
+#'   sampler <- sampler.GGMC(sadapter = sadapter)
+#'   ch <- mcmc(bnn, 10, 1000, sampler)
+#' }
 #'
 #' @export
 sadapter.Const <- function(l){
@@ -27,6 +43,22 @@ sadapter.Const <- function(l){
 #' @param kappa See STAN manual or NUTS paper
 #'
 #' @return list with `juliavar`, `juliacode`, and all given arguments
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   sadapter <- sadapter.DualAverage(100)
+#'   sampler <- sampler.GGMC(sadapter = sadapter)
+#'   ch <- mcmc(bnn, 10, 1000, sampler)
+#' }
 #'
 #' @export
 sadapter.DualAverage <- function(adapt_steps, initial_stepsize=1.0,

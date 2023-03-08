@@ -21,6 +21,25 @@
 #'    \item `params` - variational family parameters for each iteration
 #'    \item `losses` - BBB loss in each iteration
 #'}
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(RNN(5, 1))
+#'   like <- likelihood.seqtoone_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   data <- matrix(rnorm(10*1000), ncol = 10)
+#'   # Choosing sequences of length 10 and predicting one period ahead
+#'   tensor <- tensor_embed_mat(data, 10+1)
+#'   x <- tensor[1:10, , , drop = FALSE]
+#'   # Last value in each sequence is the target value
+#'   y <- tensor[11,,]
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   vi <- bayes_by_backprop(bnn, 100, 100)
+#'   vi_samples <- vi.get_samples(vi, n = 1000)
+#' }
 #'
 #'@export
 bayes_by_backprop <- function(bnn, batchsize, epochs,
@@ -55,6 +74,26 @@ bayes_by_backprop <- function(bnn, batchsize, epochs,
 #' @param n number of samples
 #'
 #' @return a matrix whose columns are draws from the variational posterior
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(RNN(5, 1))
+#'   like <- likelihood.seqtoone_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   data <- matrix(rnorm(10*1000), ncol = 10)
+#'   # Choosing sequences of length 10 and predicting one period ahead
+#'   tensor <- tensor_embed_mat(data, 10+1)
+#'   x <- tensor[1:10, , , drop = FALSE]
+#'   # Last value in each sequence is the target value
+#'   y <- tensor[11,,]
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   vi <- bayes_by_backprop(bnn, 100, 100)
+#'   vi_samples <- vi.get_samples(vi, n = 1000)
+#'   pp <- posterior_predictive(bnn, vi_samples)
+#' }
 #'
 #' @export
 vi.get_samples <- function(vi, n = 1){

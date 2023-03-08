@@ -13,8 +13,26 @@ RNN(in_size, out_size, act = c("sigmoid", "tanh", "identity", "relu"))
 
 \item{act}{Activation function}
 }
+\value{
+A list with the following content
+\itemize{
+     \item in_size - Input Size
+     \item out_size - Output Size
+     \item activation - Activation Function
+     \item julia - Julia code representing the Layer
+}
+}
 \description{
 Create a RNN layer with `in_size` input, `out_size` hidden state and `act` activation function
+}
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(RNN(5, 5, "tanh"))
+}
+
 }
 \seealso{
 \code{\link{Dense}}

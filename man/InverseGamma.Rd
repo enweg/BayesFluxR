@@ -11,8 +11,24 @@ InverseGamma(shape = 2, scale = 2)
 
 \item{scale}{scale parameter}
 }
+\value{
+A list with the following content
+\itemize{
+    \item juliavar - julia variable containing the distribution
+    \item juliacode - julia code used to create the distribution
+}
+}
 \description{
 Creates and Inverse Gamma prior in Julia using Distributions.jl
+}
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(Dense(5, 1))
+  like <- likelihood.feedforward_normal(net, InverseGamma(2.0, 0.5))
+}
 }
 \seealso{
 \code{\link{Gamma}}

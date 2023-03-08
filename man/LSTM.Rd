@@ -11,8 +11,25 @@ LSTM(in_size, out_size)
 
 \item{out_size}{Output size}
 }
+\value{
+A list with the following content
+\itemize{
+     \item in_size - Input Size
+     \item out_size - Output Size
+     \item julia - Julia code representing the Layer
+}
+}
 \description{
 Create an LSTM layer with `in_size` input size, and `out_size` hidden state size
+}
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(LSTM(5, 5))
+}
+
 }
 \seealso{
 \code{\link{Dense}}

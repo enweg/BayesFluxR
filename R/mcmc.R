@@ -11,6 +11,21 @@
 #' @param min_stepsize Do not decrease stepsize beyond this
 #'
 #' @return a list with `juliavar`, `juliacode`, and all given arguments
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   sampler <- sampler.SGLD()
+#'   ch <- mcmc(bnn, 10, 1000, sampler)
+#' }
 #'
 #' @export
 sampler.SGLD <- function(stepsize_a = 0.1, stepsize_b = 0,
@@ -42,6 +57,21 @@ sampler.SGLD <- function(stepsize_a = 0.1, stepsize_b = 0,
 #' @param eps Used for numerical reasons. Increase this if pos-def-error thrown.
 #'
 #' @return a list with `juliavar`, `juliacode`, and all given arguments
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   sampler <- sampler.AdaptiveMH(bnn, 10, 1)
+#'   ch <- mcmc(bnn, 10, 1000, sampler)
+#' }
 #'
 #' @export
 sampler.AdaptiveMH <- function(bnn, t0, sd, eps=1e-6){
@@ -74,6 +104,22 @@ sampler.AdaptiveMH <- function(bnn, t0, sd, eps=1e-6){
 #' @param steps Number of steps before accept/reject
 #'
 #' @return a list with `juliavar`, `juliacode` and all provided arguments.
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   sadapter <- sadapter.DualAverage(100)
+#'   sampler <- sampler.GGMC(sadapter = sadapter)
+#'   ch <- mcmc(bnn, 10, 1000, sampler)
+#' }
 #'
 #' @export
 sampler.GGMC <- function(beta = 0.1, l = 1.0,
@@ -115,6 +161,22 @@ sampler.GGMC <- function(beta = 0.1, l = 1.0,
 #' @param madapter Mass adapter
 #'
 #' @return a list with `juliavar`, `juliacode`, and all given arguments
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   sadapter <- sadapter.DualAverage(100)
+#'   sampler <- sampler.HMC(1e-3, 3, sadapter = sadapter)
+#'   ch <- mcmc(bnn, 10, 1000, sampler)
+#' }
 #'
 #' @export
 sampler.HMC <- function(l, path_len,
@@ -153,6 +215,21 @@ sampler.HMC <- function(l, path_len,
 #' has no theoretical backing
 #'
 #' @return a list with `juliavar`, `juliacode` and all arguments provided
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   sampler <- sampler.SGNHTS(1e-3)
+#'   ch <- mcmc(bnn, 10, 1000, sampler)
+#' }
 #'
 #' @export
 sampler.SGNHTS <- function(l, sigmaA = 1, xi = 1, mu = 1,
@@ -192,6 +269,21 @@ sampler.SGNHTS <- function(l, sigmaA = 1, xi = 1, mu = 1,
 #' sampled using the initialiser in `bnn`.
 #'
 #' @return a list containing the `samples` and the `sampler` used.
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   sampler <- sampler.SGNHTS(1e-3)
+#'   ch <- mcmc(bnn, 10, 1000, sampler)
+#' }
 #'
 #' @export
 mcmc <- function(bnn, batchsize, numsamples,

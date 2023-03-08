@@ -14,8 +14,21 @@ List with the following content
 \itemize{
     \item juliavar - the julia variable containing the network
     \item specification - the string representation of the network
+    \item nc - the julia variable for the network constructor
 }
 }
 \description{
 Chain various layers together to form a network
+}
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  Chain(LSTM(5, 5))
+  Chain(RNN(5, 5, "tanh"))
+  Chain(Dense(1, 5))
+}
+
+
 }

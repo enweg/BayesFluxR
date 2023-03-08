@@ -16,3 +16,29 @@ list with `juliavar` and `juliacode` and given matrix or `NULL`
 \description{
 Use a fixed mass matrix
 }
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(Dense(5, 1))
+  like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+  prior <- prior.gaussian(net, 0.5)
+  init <- initialise.allsame(Normal(0, 0.5), like, prior)
+  x <- matrix(rnorm(5*100), nrow = 5)
+  y <- rnorm(100)
+  bnn <- BNN(x, y, like, prior, init)
+  madapter <- madapter.FixedMassMatrix()
+  sampler <- sampler.GGMC(madapter = madapter)
+  ch <- mcmc(bnn, 10, 1000, sampler)
+
+
+  # Providing a non-sense weight matrix
+  weight_matrix <- matrix(runif(BNN.totparams(bnn)^2, 0, 1),
+                          nrow = BNN.totparams(bnn))
+  madapter2 <- madapter.FixedMassMatrix(weight_matrix)
+  sampler2 <- sampler.GGMC(madapter = madapter2)
+  ch2 <- mcmc(bnn, 10, 1000, sampler2)
+}
+
+}

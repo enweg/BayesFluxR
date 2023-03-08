@@ -23,6 +23,24 @@ get_random_symbol <- function() {
 #' @param len_seq subsequence length
 #'
 #' @return A tensor of dimension: len_seq x num_vars x num_subsequences
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(RNN(5, 1))
+#'   like <- likelihood.seqtoone_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   data <- matrix(rnorm(5*1000), ncol = 5)
+#'   # Choosing sequences of length 10 and predicting one period ahead
+#'   tensor <- tensor_embed_mat(data, 10+1)
+#'   x <- tensor[1:10, , , drop = FALSE]
+#'   # Last value in each sequence is the target value
+#'   y <- tensor[11,1,]
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   BNN.totparams(bnn)
+#' }
 #'
 #' @export
 tensor_embed_mat <- function(mat, len_seq){

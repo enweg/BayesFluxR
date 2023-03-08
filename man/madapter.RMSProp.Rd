@@ -22,3 +22,21 @@ Chen, C., Carlson, D., & Carin, L. (2016, February). Preconditioned stochastic
 gradient Langevin dynamics for deep neural networks. In Thirtieth AAAI
 Conference on Artificial Intelligence for the use in SGLD and related methods.
 }
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(Dense(5, 1))
+  like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+  prior <- prior.gaussian(net, 0.5)
+  init <- initialise.allsame(Normal(0, 0.5), like, prior)
+  x <- matrix(rnorm(5*100), nrow = 5)
+  y <- rnorm(100)
+  bnn <- BNN(x, y, like, prior, init)
+  madapter <- madapter.RMSProp(100)
+  sampler <- sampler.GGMC(madapter = madapter)
+  ch <- mcmc(bnn, 10, 1000, sampler)
+}
+
+}

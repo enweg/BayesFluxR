@@ -19,3 +19,23 @@ This is used when working with recurrent networks, especially in
 the case of seq-to-one modelling. Creates overlapping subsequences
 of the data with length `len_seq`. Returned dimensions are seq_len x num_vars x num_subsequences.
 }
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(RNN(5, 1))
+  like <- likelihood.seqtoone_normal(net, Gamma(2.0, 0.5))
+  prior <- prior.gaussian(net, 0.5)
+  init <- initialise.allsame(Normal(0, 0.5), like, prior)
+  data <- matrix(rnorm(5*1000), ncol = 5)
+  # Choosing sequences of length 10 and predicting one period ahead
+  tensor <- tensor_embed_mat(data, 10+1)
+  x <- tensor[1:10, , , drop = FALSE]
+  # Last value in each sequence is the target value
+  y <- tensor[11,1,]
+  bnn <- BNN(x, y, like, prior, init)
+  BNN.totparams(bnn)
+}
+
+}

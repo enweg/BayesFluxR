@@ -23,3 +23,19 @@ This creates a likelihood of the form
 \deqn{\frac{y_i - net(x_i)}{\sigma} \sim T_\nu\;\forall i=1,...,N}
  where the \eqn{x_i} is fed through the network in the standard feedforward way.
 }
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(Dense(5, 1))
+  like <- likelihood.feedforward_tdist(net, Gamma(2.0, 0.5), nu=8)
+  prior <- prior.gaussian(net, 0.5)
+  init <- initialise.allsame(Normal(0, 0.5), like, prior)
+  x <- matrix(rnorm(5*100), nrow = 5)
+  y <- rnorm(100)
+  bnn <- BNN(x, y, like, prior, init)
+  BNN.totparams(bnn)
+}
+
+}

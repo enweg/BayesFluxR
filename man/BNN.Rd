@@ -34,3 +34,21 @@ List with the following content
 \description{
 Create a Bayesian Neural Network
 }
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(Dense(5, 1))
+  like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+  prior <- prior.gaussian(net, 0.5)
+  init <- initialise.allsame(Normal(0, 0.5), like, prior)
+  x <- matrix(rnorm(5*100), nrow = 5)
+  y <- rnorm(100)
+  bnn <- BNN(x, y, like, prior, init)
+  sampler <- sampler.SGLD()
+  ch <- mcmc(bnn, 10, 1000, sampler)
+}
+
+
+}

@@ -25,3 +25,12 @@ A list with the following content
 \description{
 Create a Dense layer with `in_size` inputs and `out_size` outputs using `act` activation function
 }
+\examples{
+\dontrun{
+  ## Needs previous call to `BayesFluxR_setup` which is time
+  ## consuming and requires Julia and BayesFlux.jl
+  BayesFluxR_setup(installJulia=TRUE, seed=123)
+  net <- Chain(Dense(5, 5, "relu"))
+}
+
+}

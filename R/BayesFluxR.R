@@ -28,6 +28,14 @@
 #'
 #' @param seed seed to be used
 #'
+#' @return No return value, called for side effects.
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   .set_seed(123)
+#' }
 #' @export
 .set_seed <- function(seed){
   JuliaCall::julia_command(sprintf("Random.seed!(%i);", seed))
@@ -50,6 +58,12 @@
 #' @param installJulia (Default=TRUE) Whether to install Julia
 #' @param ... Other parameters passed on to \code{\link[JuliaCall]{julia_setup}}
 #'
+#' @return No return value, called for side effects.
+#' @examples
+#' \dontrun{
+#'   ## Time consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#' }
 #' @export
 BayesFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, env_path = getwd(), installJulia = FALSE, ...){
 
@@ -76,7 +90,18 @@ BayesFluxR_setup <- function(pkg_check = TRUE, nthreads = 4, seed = NULL, env_pa
 #' \itemize{
 #'     \item juliavar - the julia variable containing the network
 #'     \item specification - the string representation of the network
+#'     \item nc - the julia variable for the network constructor
 #' }
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   Chain(LSTM(5, 5))
+#'   Chain(RNN(5, 5, "tanh"))
+#'   Chain(Dense(1, 5))
+#' }
+#'
 #'
 #' @export
 Chain <- function(...){
@@ -121,6 +146,22 @@ Chain <- function(...){
 #'     \item `y` - y
 #'     \item `juliay` - julia variable holding y
 #' }
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   sampler <- sampler.SGLD()
+#'   ch <- mcmc(bnn, 10, 1000, sampler)
+#' }
+#'
 #'
 #' @export
 BNN <- function(x, y, like, prior, init){
@@ -151,6 +192,23 @@ BNN <- function(x, y, like, prior, init){
 #' Obtain the total parameters of the BNN
 #'
 #' @param bnn A BNN formed using \code{\link{BNN}}
+#'
+#' @return The total number of parameters in the BNN
+#' @examples
+#' \dontrun{
+#'   ## Needs previous call to `BayesFluxR_setup` which is time
+#'   ## consuming and requires Julia and BayesFlux.jl
+#'   BayesFluxR_setup(installJulia=TRUE, seed=123)
+#'   net <- Chain(Dense(5, 1))
+#'   like <- likelihood.feedforward_normal(net, Gamma(2.0, 0.5))
+#'   prior <- prior.gaussian(net, 0.5)
+#'   init <- initialise.allsame(Normal(0, 0.5), like, prior)
+#'   x <- matrix(rnorm(5*100), nrow = 5)
+#'   y <- rnorm(100)
+#'   bnn <- BNN(x, y, like, prior, init)
+#'   BNN.totparams(bnn)
+#' }
+#'
 #' @export
 BNN.totparams <- function(bnn) {
   totparams <- JuliaCall::julia_eval(sprintf("%s.num_total_params", bnn$juliavar))
