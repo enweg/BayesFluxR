@@ -2,7 +2,11 @@ Package: BayesFluxR
 Type: Package
 Title: Implementation of Bayesian Neural Networks
 Version: 0.1.1
-Author: Enrico Wegner <e.wegner@student.maastrichtuniversity.nl>
+Authors@R:
+  c(person(given="Enrico", 
+           family="Wegner", 
+           role=c("aut", "cre"), 
+           email="e.wegner@student.maastrichtuniversity.nl"))
 Maintainer: Enrico Wegner <e.wegner@student.maastrichtuniversity.nl>
 Description: Implementation of 'BayesFlux.jl' for R; It extends the famous 
              'Flux.jl' machine learning library to Bayesian Neural Networks. 

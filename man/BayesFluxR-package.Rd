@@ -8,4 +8,8 @@
 \description{
 Implementation of 'BayesFlux.jl' for R; It extends the famous 'Flux.jl' machine learning library to Bayesian Neural Networks. The goal is not to have the fastest production ready library, but rather to allow more people to be able to use and research on Bayesian Neural Networks.
 }
+\author{
+\strong{Maintainer}: Enrico Wegner \email{e.wegner@student.maastrichtuniversity.nl}
+
+}
 \keyword{internal}
