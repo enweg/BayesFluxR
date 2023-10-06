@@ -186,6 +186,7 @@ BNN <- function(x, y, like, prior, init){
 
   out <- list(juliavar = juliavar, juliacode = juliacode,
               x = x, y = y, juliax = sym.x, juliay = sym.y)
+  class(out) <- "BNN"
   return(out)
 }
 
