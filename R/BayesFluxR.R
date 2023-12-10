@@ -1,16 +1,3 @@
-#' How precise should values be communicated to Julia?
-#'
-#' The higher the number of zeros (digits) the more precise.
-.get_num_zeros <- function() {
-  zeros <- Sys.getenv("BFLUXR_NUM_ZEROS")
-  if (zeros == "") {
-    zeros <- 20
-  } else {
-    zeros <- as.numeric(zeros)
-  }
-  return(zeros)
-}
-
 #' Installs Julia packages if needed
 #'
 #' @param ... strings of package names
