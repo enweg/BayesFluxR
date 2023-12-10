@@ -1,3 +1,12 @@
+## BayesFluxR 0.1.3
+
+**Fixes**
+
+1. Fixes issue #2.
+2. Always use newest version of BayesFlux (Julia).
+3. Fix README
+
+
 ## BayesFluxR 0.1.2
 
 **New**
