@@ -30,6 +30,7 @@
 >   1.  Install Julia manually by following the official instructions.
 >       Link this manual installation to BayesFluxR by calling
 >       `BayesFluxR_setup(JULIA_HOME="path-to-julia-binary", env_path="path-to-some-writable-folder", pkg_check=TRUE)`
+>       or by setting the `JULIA_HOME` environment variable.
 >   2.  Make sure that the environment path you are choosing is
 >       writable. On some systems Julia is not allowed to write to some
 >       locations. A safe choice is usually to choose a folder on the
@@ -56,11 +57,10 @@ currently not possible.
 
 BayesFluxR and BayesFlux are based on Flux.jl and thus take over a lot
 of Flux’s syntax. Before we demonstrate this, we first need to install
-and load BayesFluxR. Installation is currently only possible from
-Github:
+and load BayesFluxR.
 
 ``` r
-# devtools::install_github("enweg/BayesFluxR")
+# install.packages("BayesFluxR")
 ```
 
 BayesFluxR depends on BayesFlux.jl which is a library written in Julia.
@@ -92,9 +92,9 @@ R and in Julia. If you wish to set a seed later on, please use
 library(BayesFluxR);
 # The line below sets up everything automatically, but sometimes fails
 # BayesFluxR_setup(installJulia = TRUE, seed = 6150533, env_path = "/tmp", pkg_check = TRUE)
-# If the automatic setup failed or you wish to use a specific verions of Julia, 
+# If the automatic setup failed or you wish to use a specific version of Julia, 
 # then use the JULIA_HOME argument. The path below is for a Mac. 
-BayesFluxR_setup(JULIA_HOME="/Applications/Julia-1.8.app/Contents/Resources/julia/bin/", 
+BayesFluxR_setup(JULIA_HOME="/Applications/Julia-1.9.app/Contents/Resources/julia/bin/", 
              seed = 6150533, 
              env_path = "/tmp");
 ```
@@ -485,7 +485,8 @@ legend("topleft", c("Data", "Prediction"), col = c("black", "red"), lty = c(1, 1
 
 <img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
 
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent"
+entry-spacing="0">
 
 <div id="ref-blundellWeightUncertaintyNeural2015" class="csl-entry">
 
