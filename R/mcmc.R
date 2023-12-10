@@ -34,7 +34,7 @@ sampler.SGLD <- function(stepsize_a = 0.1, stepsize_b = 0,
   JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BayesFluxR"))
 
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("ascii_SGLD(; stepsize_a = %ff0, stepsize_b = %ff0, stepsize_gamma = %ff0, min_stepsize = Float32(%s))",
+  juliacode <- sprintf("ascii_SGLD(; stepsize_a = Float32(%e), stepsize_b = Float32(%e), stepsize_gamma = Float32(%e), min_stepsize = Float32(%s))",
                        stepsize_a, stepsize_b, stepsize_gamma, min_stepsize)
   JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
@@ -82,7 +82,7 @@ sampler.AdaptiveMH <- function(bnn, t0, sd, eps=1e-6){
                                    sym.C0, sym.C0))
 
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("AdaptiveMH(%s, %i, %ff0, %ff0)",
+  juliacode <- sprintf("AdaptiveMH(%s, %i, Float32(%e), Float32(%e))",
                        sym.C0, t0, sd, eps)
   JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
@@ -130,7 +130,7 @@ sampler.GGMC <- function(beta = 0.1, l = 1.0,
   JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BayesFluxR"))
 
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("ascii_GGMC(; beta = %ff0, l = %ff0, sadapter = %s, madapter = %s, steps = %i)",
+  juliacode <- sprintf("ascii_GGMC(; beta = Float32(%e), l = Float32(%e), sadapter = %s, madapter = %s, steps = %i)",
                        beta, l, sadapter$juliavar, madapter$juliavar, steps)
 
   JuliaCall::julia_command(sprintf("%s = %s;",
@@ -183,7 +183,7 @@ sampler.HMC <- function(l, path_len,
                         sadapter = sadapter.DualAverage(1000),
                         madapter = madapter.FixedMassMatrix()){
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("HMC(%ff0, %i; sadapter = %s, madapter = %s)",
+  juliacode <- sprintf("HMC(Float32(%e), %i; sadapter = %s, madapter = %s)",
                        l, path_len, sadapter$juliavar, madapter$juliavar)
   JuliaCall::julia_command(sprintf("%s = %s;",
                            juliavar, juliacode))
@@ -238,7 +238,7 @@ sampler.SGNHTS <- function(l, sigmaA = 1, xi = 1, mu = 1,
   JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BayesFluxR"))
 
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("ascii_SGNHTS(%ff0, %ff0; xi = %ff0, mu = %ff0, madapter = %s)",
+  juliacode <- sprintf("ascii_SGNHTS(Float32(%e), Float32(%e); xi = Float32(%e), mu = Float32(%e), madapter = %s)",
                        l, sigmaA, xi, mu, madapter$juliavar)
 
   JuliaCall::julia_command(sprintf("%s = %s;",

@@ -29,7 +29,7 @@
 #' @export
 opt.Descent <- function(eta = 0.1){
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("Flux.Descent(%f)",
+  juliacode <- sprintf("Flux.Descent(%e)",
                        eta)
 
   JuliaCall::julia_command(sprintf("%s = %s;",
@@ -63,7 +63,7 @@ opt.Descent <- function(eta = 0.1){
 #' @export
 opt.ADAM <- function(eta = 0.001, beta = c(0.9, 0.999), eps = 1e-8){
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("Flux.ADAM(%f, (%f, %f), %f)",
+  juliacode <- sprintf("Flux.ADAM(%e, (%e, %e), %e)",
                        eta, beta[1], beta[2], eps)
   JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))
@@ -96,7 +96,7 @@ opt.ADAM <- function(eta = 0.001, beta = c(0.9, 0.999), eps = 1e-8){
 #' @export
 opt.RMSProp <- function(eta = 0.001, rho = 0.9, eps = 1e-8){
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("Flux.RMSProp(%f, %f, %f)",
+  juliacode <- sprintf("Flux.RMSProp(%e, %e, %e)",
                        eta, rho, eps)
   JuliaCall::julia_command(sprintf("%s = %s;",
                                    juliavar, juliacode))

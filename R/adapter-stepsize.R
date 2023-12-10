@@ -24,7 +24,7 @@
 #' @export
 sadapter.Const <- function(l){
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("ConstantStepsize(%ff0)", l)
+  juliacode <- sprintf("ConstantStepsize(Float32(%e))", l)
   JuliaCall::julia_command(sprintf("%s = %s",
                                    juliavar, juliacode))
 
@@ -66,8 +66,8 @@ sadapter.DualAverage <- function(adapt_steps, initial_stepsize=1.0,
                                  gamma = 0.05, t0 = 10, kappa = 0.75) {
 
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("DualAveragingStepSize(%ff0; target_accept = %ff0,
-                       gamma = %ff0, t0 = %i, kappa = %ff0, adapt_steps = %i)",
+  juliacode <- sprintf("DualAveragingStepSize(Float32(%e); target_accept = Float32(%e),
+                       gamma = Float32(%e), t0 = %i, kappa = Float32(%e), adapt_steps = %i)",
                        initial_stepsize, target_accept, gamma, t0,
                        kappa, adapt_steps)
 

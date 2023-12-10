@@ -71,7 +71,7 @@ likelihood.feedforward_normal <- function(chain, sig_prior){
 #'
 #' @export
 likelihood.feedforward_tdist <- function(chain, sig_prior, nu=30){
-  juliacode <- sprintf("BayesFlux.FeedforwardTDist(%s, %s, %ff0)",
+  juliacode <- sprintf("BayesFlux.FeedforwardTDist(%s, %s, Float32(%e))",
                        chain$nc, sig_prior$juliavar, nu)
   symbol <- get_random_symbol()
   JuliaCall::julia_command(sprintf("%s = %s;", symbol, juliacode))
@@ -146,7 +146,7 @@ likelihood.seqtoone_normal <- function(chain, sig_prior){
 #'
 #' @export
 likelihood.seqtoone_tdist <- function(chain, sig_prior, nu = 30){
-  juliacode <- sprintf("BayesFlux.SeqToOneTDist(%s, %s, %ff0)",
+  juliacode <- sprintf("BayesFlux.SeqToOneTDist(%s, %s, Float32(%e))",
                        chain$nc, sig_prior$juliavar, nu)
   sym <- get_random_symbol()
   JuliaCall::julia_command(sprintf("%s = %s;", sym, juliacode))

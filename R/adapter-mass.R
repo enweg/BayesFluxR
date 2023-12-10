@@ -30,7 +30,7 @@ madapter.DiagCov <- function(adapt_steps, windowlength,
                              kappa = 0.5, epsilon = 1e-6){
 
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("DiagCovMassAdapter(%i, %i; kappa = %ff0, epsilon = %ff0)",
+  juliacode <- sprintf("DiagCovMassAdapter(%i, %i; kappa = Float32(%e), epsilon = Float32(%e))",
                        adapt_steps, windowlength, kappa, epsilon)
   JuliaCall::julia_command(sprintf("%s = %s",
                                    juliavar, juliacode))
@@ -122,7 +122,7 @@ madapter.FullCov <- function(adapt_steps, windowlength,
                              kappa = 0.5, epsilon = 1e-6){
 
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("FullCovMassAdapter(%i, %i; kappa = %ff0, epsilon = %ff0)",
+  juliacode <- sprintf("FullCovMassAdapter(%i, %i; kappa = Float32(%e), epsilon = Float32(%e))",
                        adapt_steps, windowlength, kappa, epsilon)
   JuliaCall::julia_command(sprintf("%s = %s",
                                    juliavar, juliacode))
@@ -172,7 +172,7 @@ madapter.RMSProp <- function(adapt_steps, lambda = 1e-5, alpha = 0.99){
   JuliaCall::julia_source(system.file("Julia/ascii-translate.jl", package = "BayesFluxR"))
 
   juliavar <- get_random_symbol()
-  juliacode <- sprintf("ascii_RMSPropMassAdapter(%i; lambda = %ff0, alpha = %ff0)",
+  juliacode <- sprintf("ascii_RMSPropMassAdapter(%i; lambda = Float32(%e), alpha = Float32(%e))",
                        adapt_steps, lambda, alpha)
 
   JuliaCall::julia_command(sprintf("%s = %s",

@@ -21,7 +21,7 @@
 #'
 #' @export
 Gamma <- function(shape=2.0, scale=2.0){
-  juliacode <- sprintf("Gamma(%f, %f)", shape, scale)
+  juliacode <- sprintf("Gamma(%e, %e)", shape, scale)
   symbol <- get_random_symbol()
   JuliaCall::julia_command(sprintf("%s = %s;", symbol, juliacode))
   out <- list(juliavar = symbol, juliacode = juliacode)
@@ -50,7 +50,7 @@ Gamma <- function(shape=2.0, scale=2.0){
 #' }
 #' @export
 InverseGamma <- function(shape=2.0, scale=2.0){
-  juliacode <- sprintf("InverseGamma(%f, %f)", shape, scale)
+  juliacode <- sprintf("InverseGamma(%e, %e)", shape, scale)
   symbol <- get_random_symbol()
   JuliaCall::julia_command(sprintf("%s = %s;", symbol, juliacode))
   out <- list(juliavar = symbol, juliacode = juliacode)
@@ -78,7 +78,7 @@ InverseGamma <- function(shape=2.0, scale=2.0){
 #'
 #' @export
 Normal <- function(mu=0, sigma=1){
-  juliacode <- sprintf("Normal(%f, %f)", mu, sigma)
+  juliacode <- sprintf("Normal(%e, %e)", mu, sigma)
   symbol <- get_random_symbol()
   JuliaCall::julia_command(sprintf("%s = %s;", symbol, juliacode))
   out <- list(juliavar = symbol, juliacode = juliacode)
@@ -106,7 +106,7 @@ Normal <- function(mu=0, sigma=1){
 #'
 #' @export
 Truncated <- function(dist, lower, upper){
-  juliacode <- sprintf("Truncated(%s, %f, %f)", dist$juliacode, lower, upper)
+  juliacode <- sprintf("Truncated(%s, %e, %e)", dist$juliacode, lower, upper)
   symbol <- get_random_symbol()
   JuliaCall::julia_command(sprintf("%s = %s;", symbol, juliacode))
   out <- list(juliavar = symbol, juliacode = juliacode)
